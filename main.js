@@ -13,16 +13,6 @@ async function main() {
     userId
   })
 
-  const phoneNumber = '+19293048834'
-  // const res = await clubhouse.startPhoneNumberAuth(phoneNumber)
-  // console.dir(res)
-
-  // const res2 = await clubhouse.resendPhoneNumberAuth(phoneNumber)
-  // console.dir(res2)
-
-  // const res3 = await clubhouse.completePhoneNumberAuth(phoneNumber, 3965)
-  // console.dir(res3)
-
   // const seedUserId = '13870'
   const seedUserId = userId
 

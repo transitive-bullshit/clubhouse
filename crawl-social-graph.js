@@ -1,5 +1,9 @@
 import PQueue from 'p-queue'
 
+/**
+ * Performs a BFS traversal over the Clubhouse social graph, starting from a
+ * given seed user and expanding outwards from there.
+ */
 export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
   const { concurrency = 4, maxUsers = Number.POSITIVE_INFINITY } = opts
   const queue = new PQueue({ concurrency })
@@ -19,8 +23,9 @@ export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
 
       queue.add(async () => {
         try {
+          const numUsersCrawled = Object.keys(users).length
           clubhouse.log(
-            `crawling user ${userId} (${Object.keys(users).length} users)`
+            `crawling user ${userId} (${numUsersCrawled} users crawled)`
           )
           const userProfile = await clubhouse.getProfile(userId)
           if (!userProfile) {
@@ -29,9 +34,7 @@ export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
 
           const { user_profile: user } = userProfile
           clubhouse.log(
-            `user ${userId} (${user.username}) found (${
-              Object.keys(users).length
-            } users)`
+            `user ${userId} (${user.username}) found (${numUsersCrawled} users crawled)`
           )
 
           {

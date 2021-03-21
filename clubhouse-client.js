@@ -49,6 +49,14 @@ export class ClubhouseClient {
     }
   }
 
+  get isAuthenticated() {
+    return this._token && this._deviceId && this._userId
+  }
+
+  get log() {
+    return this._log
+  }
+
   startPhoneNumberAuth(phoneNumber) {
     return this._fetch({
       auth: false,
@@ -189,14 +197,6 @@ export class ClubhouseClient {
     } while (page)
 
     return users
-  }
-
-  get isAuthenticated() {
-    return this._token && this._deviceId && this._userId
-  }
-
-  get log() {
-    return this._log
   }
 
   __fetch({
