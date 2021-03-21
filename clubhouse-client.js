@@ -1,5 +1,6 @@
 import got from 'got'
 import pThrottle from 'p-throttle'
+import { v4 as uuidv4 } from 'uuid'
 
 const MAX_PAGE_SIZE = 400
 const noop = () => undefind
@@ -10,13 +11,13 @@ export class ClubhouseClient {
 
   _deviceId = null
   _userId = null
-  _token = null
+  _authToken = null
 
   constructor(opts = {}) {
     const {
-      deviceId,
+      deviceId = uuidv4().toUpperCase(),
       userId,
-      token,
+      authToken,
       apiBaseUrl = 'https://www.clubhouseapi.com/api',
       appBuild = '304',
       appVersion = '0.1.28',
@@ -32,7 +33,7 @@ export class ClubhouseClient {
 
     this._deviceId = deviceId
     this._userId = userId
-    this._token = token
+    this._authToken = authToken
 
     // throttle clubhouse API calls to mitigate rate limiting
     this._fetch = pThrottle(throttle)(this.__fetch)
@@ -50,7 +51,7 @@ export class ClubhouseClient {
   }
 
   get isAuthenticated() {
-    return this._token && this._deviceId && this._userId
+    return this._authToken && this._deviceId && this._userId
   }
 
   get log() {
@@ -88,6 +89,9 @@ export class ClubhouseClient {
         phone_number: phoneNumber,
         verification_code: verificationCode
       }
+    }).then((res) => {
+      this._userId = res.user_profile.user_id
+      this._authToken = res.auth_token
     })
   }
 
@@ -217,7 +221,7 @@ export class ClubhouseClient {
       }
 
       authHeaders = {
-        authorization: `Token ${this._token}`,
+        authorization: `Token ${this._authToken}`,
         'ch-deviceid': this._deviceId,
         'ch-userid': this._userId
       }

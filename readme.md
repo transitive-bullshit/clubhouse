@@ -12,7 +12,44 @@ Happy Hacking 🙃
 
 ## Usage
 
-**TODO**
+```ts
+import { ClubhouseClient } from 'clubhouse-client'
+
+const clubhouse = new ClubhouseClient()
+const exampleUserId = '2481724'
+
+const examplePhoneNumber = '+15555555555'
+await clubhouse.startPhoneNumberAuth(examplePhoneNumber)
+
+// get 2-factor SMS code
+const exampleVerificationCode = '5555'
+
+await clubhouse.completePhoneNumberAuth(
+  examplePhoneNumber,
+  exampleVerificationCode
+)
+
+// you should now be authenticated with a userId and authToken
+// you can alternatively auth directly via params to the ClubhouseClient constructor
+
+const me = await clubhouse.getMe()
+
+const profile = await clubhouse.getProfile(exampleUserId)
+
+// get a single page of results for users that our example user is following
+const followers = await clubhouse.getFollowers(exampleUserId)
+
+// get a single page of results for users following our example user
+const following = await clubhouse.getFollowing(exampleUserId)
+
+// get all of the users that our example user is following
+// (this will fetch all of the page results)
+const allFollowing = await clubhouse.getAllFollowing(exampleUserId)
+
+// get all of the users following our example user
+// (this will fetch all of the page results)
+const allFollowers = await clubhouse.getAllFollowers(exampleUserId)
+```
 
 ## License
 
