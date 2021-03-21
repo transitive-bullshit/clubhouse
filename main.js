@@ -2,6 +2,7 @@ import { ClubhouseClient } from './clubhouse-client'
 import PQueue from 'p-queue'
 
 async function main() {
+  // TODO: remove these hard-coded constants
   const token = 'a1bcd2983dd921fefc428f3bba55bbf79f3e7fc3'
   const deviceId = '3EE60C75-C867-4BEC-86D5-2B9ED33844D2'
   const userId = '2481724'
@@ -28,13 +29,13 @@ async function main() {
   // console.log(JSON.stringify(following, null, 2))
 
   const users = await crawlSocialGraph(clubhouse, seedUserId, {
-    maxusers: 10000
+    maxUsers: 1000
   })
   console.log(JSON.stringify(users, null, 2))
 }
 
 async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
-  const { concurrency = 4, maxUsers = Number.POSITIVE_INFINITY } = opts
+  const { concurrency = 1, maxUsers = Number.POSITIVE_INFINITY } = opts
   const queue = new PQueue({ concurrency })
   const pendingUserIds = new Set()
   const users = {}
@@ -61,6 +62,11 @@ async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
           }
 
           const { user_profile: user } = userProfile
+          console.error(
+            `user ${userId} (${user.username}) found (${
+              Object.keys(users).length
+            } users)`
+          )
 
           {
             // fetch all of the users following this user
@@ -95,6 +101,7 @@ async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
           }
 
           users[userId] = user
+          console.log(JSON.stringify(user, null, 2))
         } catch (err) {
           console.warn('error crawling user', userId, err)
           if (users[userId] === undefined) {

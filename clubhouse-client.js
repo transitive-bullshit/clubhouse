@@ -20,7 +20,7 @@ export class ClubhouseClient {
       token,
       throttle = {
         limit: 1,
-        interval: 1000
+        interval: 2000
       }
     } = opts
 
@@ -36,10 +36,8 @@ export class ClubhouseClient {
       throw new Error('Missing required ClubhouseClient opts.token')
     }
 
-    this._apiBaseUrl = opts.apiBaseUrl || 'https://api.hipster.house/api'
-
-    // TODO: figure out why accessing the clubhouse API directly fails with 403 errors
-    // 'https://www.clubhouseapi.com/api'
+    this._apiBaseUrl = opts.apiBaseUrl || 'https://www.clubhouseapi.com/api'
+    //  || 'https://api.hipster.house/api'
 
     this._deviceId = deviceId
     this._userId = userId
@@ -47,19 +45,17 @@ export class ClubhouseClient {
 
     this._fetch = pThrottle(throttle)(this.__fetch)
 
+    // const appBuild = '269'
+    // const appVersion = '0.1.15'
+    const appBuild = '304'
+    const appVersion = '0.1.28'
+
     this._headers = {
-      accept: '*/*',
-      'accept-language': 'en-US,en;q=0.9',
-      'ch-appbuild': '269',
-      'ch-appversion': '0.1.15',
+      'ch-appbuild': appBuild,
+      'ch-appversion': appVersion,
       'ch-languages': 'en-US',
       'ch-locale': 'en_US',
-      'sec-ch-ua':
-        '"Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-fetch-dest': 'empty',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-site': 'same-site',
+      'user-agent': `clubhouse/${appVersion} (iPhone; iOS 13.5.1; Scale/3.00)`,
       ...opts.headers
     }
   }
@@ -188,7 +184,9 @@ export class ClubhouseClient {
       params.json = body
     }
 
-    console.log(apiUrl, JSON.stringify(params, null, 2))
+    const { headers: temp, ...debugParams } = params
+    console.error(apiUrl, JSON.stringify(debugParams, null, 2))
+
     return got(apiUrl, params).json()
   }
 }
