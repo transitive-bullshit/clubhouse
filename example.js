@@ -1,23 +1,22 @@
-import { ClubhouseClient } from './clubhouse-client'
-import { crawlSocialGraph } from './crawl-social-graph'
+const { ClubhouseClient, crawlSocialGraph } = require('./build')
 
 async function main() {
   // TODO: remove these hard-coded constants
-  const token = 'a1bcd2983dd921fefc428f3bba55bbf79f3e7fc3'
+  const authToken = '20bff16dc1015db14e0ffabad011813e758347ef'
   const deviceId = '3EE60C75-C867-4BEC-86D5-2B9ED33844D2'
-  const userId = '2481724'
+  const userId = '2481724' // travis fischer
 
   const clubhouse = new ClubhouseClient({
-    token,
+    authToken,
     deviceId,
     userId
   })
 
-  // const seedUserId = '13870'
+  // const seedUserId = '13870' // gregarious
   const seedUserId = userId
 
-  // const profile = await clubhouse.getProfile(seedUserId)
-  // console.log(JSON.stringify(profile, null, 2))
+  const profile = await clubhouse.getProfile(seedUserId)
+  console.log(JSON.stringify(profile, null, 2))
 
   // const followers = await clubhouse.getFollowers(seedUserId)
   // console.log(JSON.stringify(followers, null, 2))

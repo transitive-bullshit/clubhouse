@@ -2,18 +2,38 @@ import got from 'got'
 import pThrottle from 'p-throttle'
 import { v4 as uuidv4 } from 'uuid'
 
+import { UserId } from './types'
+
 const MAX_PAGE_SIZE = 400
-const noop = () => undefind
+const noop = () => undefined
+
+export interface ClubhouseClientConfig {
+  deviceId?: string
+  userId?: UserId
+  authToken?: string
+  apiBaseUrl?: string
+  appBuild?: string
+  appVersion?: string
+  throttle?: {
+    limit: number
+    interval: number
+  }
+  log?: any
+  headers?: any
+}
 
 export class ClubhouseClient {
-  _apiBaseUrl = ''
-  _headers = {}
+  _apiBaseUrl: string = ''
+  _headers: any = {}
 
-  _deviceId = null
-  _userId = null
-  _authToken = null
+  _deviceId: string = null
+  _userId: UserId = null
+  _authToken: string = null
 
-  constructor(opts = {}) {
+  _fetch: any
+  _log: any
+
+  constructor(opts: ClubhouseClientConfig = {}) {
     const {
       deviceId = uuidv4().toUpperCase(),
       userId,
@@ -23,8 +43,9 @@ export class ClubhouseClient {
       appVersion = '0.1.28',
       throttle = {
         limit: 1,
-        interval: 2000
+        interval: 5000
       },
+      headers,
       log = console.error.bind(console)
     } = opts
 
@@ -46,7 +67,7 @@ export class ClubhouseClient {
       'ch-languages': 'en-US',
       'ch-locale': 'en_US',
       'user-agent': `clubhouse/${appVersion} (iPhone; iOS 13.5.1; Scale/3.00)`,
-      ...opts.headers
+      ...headers
     }
   }
 
@@ -58,7 +79,7 @@ export class ClubhouseClient {
     return this._log
   }
 
-  startPhoneNumberAuth(phoneNumber) {
+  async startPhoneNumberAuth(phoneNumber: string) {
     return this._fetch({
       auth: false,
       endpoint: `/start_phone_number_auth`,
@@ -69,7 +90,7 @@ export class ClubhouseClient {
     })
   }
 
-  resendPhoneNumberAuth(phoneNumber) {
+  async resendPhoneNumberAuth(phoneNumber: string) {
     return this._fetch({
       auth: false,
       endpoint: `/resend_phone_number_auth`,
@@ -80,7 +101,7 @@ export class ClubhouseClient {
     })
   }
 
-  completePhoneNumberAuth(phoneNumber, verificationCode) {
+  async completePhoneNumberAuth(phoneNumber: string, verificationCode: string) {
     return this._fetch({
       auth: false,
       endpoint: `/complete_phone_number_auth`,
@@ -92,10 +113,11 @@ export class ClubhouseClient {
     }).then((res) => {
       this._userId = res.user_profile.user_id
       this._authToken = res.auth_token
+      return res
     })
   }
 
-  getProfile(userId) {
+  async getProfile(userId: UserId) {
     return this._fetch({
       endpoint: `/get_profile`,
       method: 'POST',
@@ -105,7 +127,7 @@ export class ClubhouseClient {
     })
   }
 
-  getMe() {
+  async getMe() {
     return this._fetch({
       endpoint: `/me`,
       method: 'POST',
@@ -117,15 +139,22 @@ export class ClubhouseClient {
     })
   }
 
-  checkWaitlistStatus() {
+  async checkWaitlistStatus() {
     return this._fetch({
       endpoint: `/check_waitlist_status`
     })
   }
 
-  getFollowers(userId, opts = {}) {
-    const { pageSize = MAX_PAGE_SIZE, page = 1 } = opts
-
+  async getFollowers(
+    userId: UserId,
+    {
+      pageSize = MAX_PAGE_SIZE,
+      page = 1
+    }: {
+      pageSize?: number
+      page?: number
+    } = {}
+  ) {
     return this._fetch({
       endpoint: `/get_followers`,
       method: 'GET',
@@ -137,9 +166,16 @@ export class ClubhouseClient {
     })
   }
 
-  getFollowing(userId, opts = {}) {
-    const { pageSize = MAX_PAGE_SIZE, page = 1 } = opts
-
+  async getFollowing(
+    userId: UserId,
+    {
+      pageSize = MAX_PAGE_SIZE,
+      page = 1
+    }: {
+      pageSize?: number
+      page?: number
+    } = {}
+  ) {
     return this._fetch({
       endpoint: `/get_following`,
       method: 'GET',
@@ -151,12 +187,16 @@ export class ClubhouseClient {
     })
   }
 
-  async getAllFollowing(userId, opts = {}) {
-    const {
+  async getAllFollowing(
+    userId,
+    {
       pageSize = MAX_PAGE_SIZE,
       maxUsers = Number.POSITIVE_INFINITY
-    } = opts
-
+    }: {
+      pageSize?: number
+      maxUsers?: number
+    } = {}
+  ) {
     let users = []
     let page = 1
 
@@ -177,12 +217,16 @@ export class ClubhouseClient {
     return users
   }
 
-  async getAllFollowers(userId, opts = {}) {
-    const {
+  async getAllFollowers(
+    userId,
+    {
       pageSize = MAX_PAGE_SIZE,
       maxUsers = Number.POSITIVE_INFINITY
-    } = opts
-
+    }: {
+      pageSize?: number
+      maxUsers?: number
+    } = {}
+  ) {
     let users = []
     let page = 1
 
@@ -203,7 +247,7 @@ export class ClubhouseClient {
     return users
   }
 
-  __fetch({
+  async __fetch({
     endpoint,
     method = 'GET',
     auth = true,

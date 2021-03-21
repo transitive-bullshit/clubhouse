@@ -4,25 +4,20 @@
 
 [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
-## Disclaimer
-
-This code is intended purely for educational purposes. It may go against the Clubhouse ToS, so use at your own discretion. We recommend against using this API / crawler with your personal Clubhouse account — you may get banned.
-
-Happy Hacking 🙃
-
 ## Usage
 
 ```ts
 import { ClubhouseClient } from 'clubhouse-client'
 
-const clubhouse = new ClubhouseClient()
 const exampleUserId = '2481724'
-
 const examplePhoneNumber = '+15555555555'
+const exampleVerificationCode = '5555'
+
+const clubhouse = new ClubhouseClient()
+
 await clubhouse.startPhoneNumberAuth(examplePhoneNumber)
 
-// get 2-factor SMS code
-const exampleVerificationCode = '5555'
+// NOTE: manually get the SMS verification code
 
 await clubhouse.completePhoneNumberAuth(
   examplePhoneNumber,
@@ -30,7 +25,7 @@ await clubhouse.completePhoneNumberAuth(
 )
 
 // you should now be authenticated with a userId and authToken
-// you can alternatively auth directly via params to the ClubhouseClient constructor
+// you can alternatively auth directly via the ClubhouseClient constructor
 
 const me = await clubhouse.getMe()
 
@@ -50,6 +45,12 @@ const allFollowing = await clubhouse.getAllFollowing(exampleUserId)
 // (this will fetch all of the page results)
 const allFollowers = await clubhouse.getAllFollowers(exampleUserId)
 ```
+
+## Disclaimer
+
+This code is intended purely for educational purposes. It may go against the Clubhouse ToS, so use at your own discretion. We recommend against using this API / crawler with your personal Clubhouse account — you may get banned.
+
+Happy Hacking 🙃
 
 ## License
 

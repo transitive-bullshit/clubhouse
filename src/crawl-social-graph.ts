@@ -1,11 +1,23 @@
 import PQueue from 'p-queue'
 
+import { ClubhouseClient } from './clubhouse-client'
+import { UserId } from './types'
+
 /**
  * Performs a BFS traversal over the Clubhouse social graph, starting from a
  * given seed user and expanding outwards from there.
  */
-export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
-  const { concurrency = 4, maxUsers = Number.POSITIVE_INFINITY } = opts
+export async function crawlSocialGraph(
+  clubhouse: ClubhouseClient,
+  seedUserId: UserId,
+  {
+    concurrency = 4,
+    maxUsers = Number.POSITIVE_INFINITY
+  }: {
+    concurrency?: number
+    maxUsers?: number
+  } = {}
+) {
   const queue = new PQueue({ concurrency })
   const pendingUserIds = new Set()
   const users = {}

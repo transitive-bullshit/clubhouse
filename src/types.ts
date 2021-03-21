@@ -1,8 +1,11 @@
-interface ClubhouseAPIResponse {
+export type UserId = string | number
+
+export interface ClubhouseAPIResponse {
   success: boolean
 }
 
-interface CompletePhoneNumberAuthAPIResponse extends ClubhouseAPIResponse {
+export interface CompletePhoneNumberAuthAPIResponse
+  extends ClubhouseAPIResponse {
   user_profile: {
     user_id: number
     name: string
