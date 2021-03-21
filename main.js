@@ -52,6 +52,9 @@ async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
 
       queue.add(async () => {
         try {
+          console.error(
+            `crawling user ${userId} (${Object.keys(users).length} users)`
+          )
           const userProfile = await clubhouse.getProfile(userId)
           if (!userProfile) {
             return
@@ -59,24 +62,37 @@ async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
 
           const { user_profile: user } = userProfile
 
-          const following = await clubhouse.getAllFollowing(userId, {
-            maxUsers: maxUsers - numUsers
-          })
+          {
+            // fetch all of the users following this user
+            const following = await clubhouse.getAllFollowing(userId, {
+              maxUsers
+            })
+            console.error(
+              `user ${userId} (${user.username}) found ${following.length} following`
+            )
 
-          for (const followingUser of following) {
-            processUser(followingUser.user_id)
+            for (const followingUser of following) {
+              processUser(followingUser.user_id)
+            }
+
+            user.following = following
           }
 
-          const followers = await clubhouse.getAllFollowers(userId, {
-            maxUsers: maxUsers - numUsers
-          })
+          {
+            // fetch all of this user's followers
+            const followers = await clubhouse.getAllFollowers(userId, {
+              maxUsers
+            })
+            console.error(
+              `user ${userId} (${user.username}) found ${followers.length} followers`
+            )
 
-          for (const followerUser of followers) {
-            processUser(followerUser.user_id)
+            for (const followerUser of followers) {
+              processUser(followerUser.user_id)
+            }
+
+            user.followers = followers
           }
-
-          user.following = following
-          user.followers = followers
 
           users[userId] = user
         } catch (err) {
