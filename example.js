@@ -15,8 +15,8 @@ async function main() {
   // const seedUserId = '13870' // gregarious
   const seedUserId = userId
 
-  const profile = await clubhouse.getProfile(seedUserId)
-  console.log(JSON.stringify(profile, null, 2))
+  // const profile = await clubhouse.getProfile(seedUserId)
+  // console.log(JSON.stringify(profile, null, 2))
 
   // const followers = await clubhouse.getFollowers(seedUserId)
   // console.log(JSON.stringify(followers, null, 2))
@@ -27,10 +27,10 @@ async function main() {
   // const following = await clubhouse.getAllFollowing(seedUserId)
   // console.log(JSON.stringify(following, null, 2))
 
-  // const users = await crawlSocialGraph(clubhouse, seedUserId, {
-  //   maxUsers: 100
-  // })
-  // console.log(JSON.stringify(users, null, 2))
+  const users = await crawlSocialGraph(clubhouse, seedUserId, {
+    maxUsers: 100
+  })
+  console.log(JSON.stringify(users, null, 2))
 }
 
 main().catch((err) => {

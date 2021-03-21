@@ -61,8 +61,8 @@ export interface ClubRule {
 // ----------------------------------------------------------------------------
 
 export interface SocialGraphUserProfile extends UserProfile {
-  following: User[]
-  followers: User[]
+  following?: User[]
+  followers?: User[]
 }
 
 export interface SocialGraph {

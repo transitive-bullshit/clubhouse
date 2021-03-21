@@ -24,4 +24,5 @@ yarn-error.log*
 .next/
 .vercel/
 
+data/
 out.json

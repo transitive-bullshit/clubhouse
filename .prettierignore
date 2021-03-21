@@ -1,4 +1,5 @@
 .snapshots/
 .vercel/
 build/
+data/
 out.json
