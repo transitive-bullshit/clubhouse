@@ -1,0 +1,4 @@
+.snapshots/
+.vercel/
+build/
+out.json

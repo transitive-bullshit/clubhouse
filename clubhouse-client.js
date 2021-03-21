@@ -2,6 +2,7 @@ import got from 'got'
 import pThrottle from 'p-throttle'
 
 const MAX_PAGE_SIZE = 400
+const noop = () => undefind
 
 export class ClubhouseClient {
   _apiBaseUrl = ''
@@ -16,16 +17,17 @@ export class ClubhouseClient {
       deviceId,
       userId,
       token,
-      apiBaseUrl,
+      apiBaseUrl = 'https://www.clubhouseapi.com/api',
       appBuild = '304',
       appVersion = '0.1.28',
       throttle = {
         limit: 1,
         interval: 2000
-      }
+      },
+      log = console.error.bind(console)
     } = opts
 
-    this._apiBaseUrl = apiBaseUrl || 'https://www.clubhouseapi.com/api'
+    this._apiBaseUrl = apiBaseUrl
     // 'https://api.hipster.house/api'
 
     this._deviceId = deviceId
@@ -34,6 +36,8 @@ export class ClubhouseClient {
 
     // throttle clubhouse API calls to mitigate rate limiting
     this._fetch = pThrottle(throttle)(this.__fetch)
+
+    this._log = log || noop
 
     this._headers = {
       'ch-appbuild': appBuild,
@@ -191,6 +195,10 @@ export class ClubhouseClient {
     return this._token && this._deviceId && this._userId
   }
 
+  get log() {
+    return this._log
+  }
+
   __fetch({
     endpoint,
     method = 'GET',
@@ -230,8 +238,10 @@ export class ClubhouseClient {
       params.json = body
     }
 
-    const { headers: temp, ...debugParams } = params
-    console.error(apiUrl, JSON.stringify(debugParams, null, 2))
+    if (this.log) {
+      const { headers: temp, ...debugParams } = params
+      this.log(apiUrl, JSON.stringify(debugParams, null, 2))
+    }
 
     return got(apiUrl, params).json()
   }

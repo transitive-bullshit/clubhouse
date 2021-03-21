@@ -19,7 +19,7 @@ export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
 
       queue.add(async () => {
         try {
-          console.error(
+          clubhouse.log(
             `crawling user ${userId} (${Object.keys(users).length} users)`
           )
           const userProfile = await clubhouse.getProfile(userId)
@@ -28,7 +28,7 @@ export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
           }
 
           const { user_profile: user } = userProfile
-          console.error(
+          clubhouse.log(
             `user ${userId} (${user.username}) found (${
               Object.keys(users).length
             } users)`
@@ -39,7 +39,7 @@ export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
             const following = await clubhouse.getAllFollowing(userId, {
               maxUsers
             })
-            console.error(
+            clubhouse.log(
               `user ${userId} (${user.username}) found ${following.length} following`
             )
 
@@ -55,7 +55,7 @@ export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
             const followers = await clubhouse.getAllFollowers(userId, {
               maxUsers
             })
-            console.error(
+            clubhouse.log(
               `user ${userId} (${user.username}) found ${followers.length} followers`
             )
 
@@ -67,9 +67,11 @@ export async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
           }
 
           users[userId] = user
+
+          // print incremental progress to stdout
           console.log(JSON.stringify(user, null, 2))
         } catch (err) {
-          console.warn('error crawling user', userId, err)
+          clubhouse.log('error crawling user', userId, err)
           if (users[userId] === undefined) {
             users[userId] = null
           }
