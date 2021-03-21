@@ -1,8 +1,14 @@
-import got from 'got'
+import got, { OptionsOfJSONResponseBody } from 'got'
 import pThrottle from 'p-throttle'
 import { v4 as uuidv4 } from 'uuid'
 
-import { UserId } from './types'
+import {
+  UserId,
+  User,
+  GetMeAPIResponse,
+  UserProfileAPIResponse,
+  PagedUserAPIResponse
+} from './types'
 
 const MAX_PAGE_SIZE = 400
 const noop = () => undefined
@@ -22,6 +28,20 @@ export interface ClubhouseClientConfig {
   headers?: any
 }
 
+export interface ClubhouseClientFetchParams {
+  endpoint: string
+  method?: string
+  auth?: boolean
+  body?: any
+  gotOptions?: OptionsOfJSONResponseBody
+  headers?: any
+  [key: string]: any
+}
+
+export type ClubhouseClientFetch<T> = (
+  params: ClubhouseClientFetchParams
+) => Promise<T>
+
 export class ClubhouseClient {
   _apiBaseUrl: string = ''
   _headers: any = {}
@@ -30,7 +50,7 @@ export class ClubhouseClient {
   _userId: UserId = null
   _authToken: string = null
 
-  _fetch: any
+  _fetch: ClubhouseClientFetch<any>
   _log: any
 
   constructor(opts: ClubhouseClientConfig = {}) {
@@ -117,17 +137,7 @@ export class ClubhouseClient {
     })
   }
 
-  async getProfile(userId: UserId) {
-    return this._fetch({
-      endpoint: `/get_profile`,
-      method: 'POST',
-      body: {
-        user_id: userId
-      }
-    })
-  }
-
-  async getMe() {
+  async getMe(): Promise<GetMeAPIResponse> {
     return this._fetch({
       endpoint: `/me`,
       method: 'POST',
@@ -135,6 +145,16 @@ export class ClubhouseClient {
         return_blocked_ids: true,
         return_following_ids: true
         // timezone_identifier
+      }
+    })
+  }
+
+  async getProfile(userId: UserId): Promise<UserProfileAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_profile`,
+      method: 'POST',
+      body: {
+        user_id: userId
       }
     })
   }
@@ -154,7 +174,7 @@ export class ClubhouseClient {
       pageSize?: number
       page?: number
     } = {}
-  ) {
+  ): Promise<PagedUserAPIResponse> {
     return this._fetch({
       endpoint: `/get_followers`,
       method: 'GET',
@@ -175,7 +195,7 @@ export class ClubhouseClient {
       pageSize?: number
       page?: number
     } = {}
-  ) {
+  ): Promise<PagedUserAPIResponse> {
     return this._fetch({
       endpoint: `/get_following`,
       method: 'GET',
@@ -196,8 +216,8 @@ export class ClubhouseClient {
       pageSize?: number
       maxUsers?: number
     } = {}
-  ) {
-    let users = []
+  ): Promise<User[]> {
+    let users: User[] = []
     let page = 1
 
     do {
@@ -226,8 +246,8 @@ export class ClubhouseClient {
       pageSize?: number
       maxUsers?: number
     } = {}
-  ) {
-    let users = []
+  ): Promise<User[]> {
+    let users: User[] = []
     let page = 1
 
     do {
@@ -255,7 +275,7 @@ export class ClubhouseClient {
     gotOptions,
     headers,
     ...rest
-  }) {
+  }: ClubhouseClientFetchParams) {
     const apiUrl = `${this._apiBaseUrl}${endpoint}`
 
     let authHeaders
@@ -271,7 +291,7 @@ export class ClubhouseClient {
       }
     }
 
-    const params = {
+    const params: any = {
       method,
       ...gotOptions,
       headers: {
