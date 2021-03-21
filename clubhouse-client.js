@@ -117,9 +117,13 @@ export class ClubhouseClient {
   }
 
   async getAllFollowing(userId, opts = {}) {
-    const { pageSize = MAX_PAGE_SIZE } = opts
-    let page = 1
+    const {
+      pageSize = MAX_PAGE_SIZE,
+      maxUsers = Number.POSITIVE_INFINITY
+    } = opts
+
     let users = []
+    let page = 1
 
     do {
       const currentPage = await this.getFollowing(userId, {
@@ -129,15 +133,23 @@ export class ClubhouseClient {
 
       users = users.concat(currentPage.users)
       page = currentPage.next
+
+      if (users.length >= maxUsers) {
+        break
+      }
     } while (page)
 
     return users
   }
 
   async getAllFollowers(userId, opts = {}) {
-    const { pageSize = MAX_PAGE_SIZE } = opts
-    let page = 1
+    const {
+      pageSize = MAX_PAGE_SIZE,
+      maxUsers = Number.POSITIVE_INFINITY
+    } = opts
+
     let users = []
+    let page = 1
 
     do {
       const currentPage = await this.getFollowers(userId, {
@@ -147,6 +159,10 @@ export class ClubhouseClient {
 
       users = users.concat(currentPage.users)
       page = currentPage.next
+
+      if (users.length >= maxUsers) {
+        break
+      }
     } while (page)
 
     return users

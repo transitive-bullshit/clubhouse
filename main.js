@@ -12,8 +12,8 @@ async function main() {
     userId
   })
 
-  const seedUserId = '13870'
-  // const seedUserId = userId
+  // const seedUserId = '13870'
+  const seedUserId = userId
 
   // const profile = await clubhouse.getProfile(seedUserId)
   // console.log(JSON.stringify(profile, null, 2))
@@ -24,41 +24,64 @@ async function main() {
   // const following = await clubhouse.getFollowing(seedUserId)
   // console.log(JSON.stringify(following, null, 2))
 
-  const following = await clubhouse.getAllFollowing(seedUserId)
-  console.log(JSON.stringify(following, null, 2))
+  // const following = await clubhouse.getAllFollowing(seedUserId)
+  // console.log(JSON.stringify(following, null, 2))
+
+  const users = await crawlSocialGraph(clubhouse, seedUserId, {
+    maxusers: 10000
+  })
+  console.log(JSON.stringify(users, null, 2))
 }
 
 async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
-  const { concurrency = 4 } = opts
+  const { concurrency = 4, maxUsers = Number.POSITIVE_INFINITY } = opts
   const queue = new PQueue({ concurrency })
   const pendingUserIds = new Set()
   const users = {}
+  let numUsers = 0
 
   function processUser(userId) {
-    if (userId && users[userId] === undefined && !pendingUserIds.has(userId)) {
+    if (
+      userId &&
+      users[userId] === undefined &&
+      !pendingUserIds.has(userId) &&
+      numUsers < maxUsers
+    ) {
       pendingUserIds.add(userId)
+      numUsers++
 
       queue.add(async () => {
         try {
-          const user = await clubhouse.getProfile(userId)
-          if (!user) {
+          const userProfile = await clubhouse.getProfile(userId)
+          if (!userProfile) {
             return
           }
 
-          users[userId] = user
+          const { user_profile: user } = userProfile
 
-          const following = await clubhouse.getAllFollowing(userId)
+          const following = await clubhouse.getAllFollowing(userId, {
+            maxUsers: maxUsers - numUsers
+          })
+
           for (const followingUser of following) {
             processUser(followingUser.user_id)
           }
 
-          const followers = await clubhouse.getAllFollowers(userId)
+          const followers = await clubhouse.getAllFollowers(userId, {
+            maxUsers: maxUsers - numUsers
+          })
+
           for (const followerUser of followers) {
             processUser(followerUser.user_id)
           }
+
+          user.following = following
+          user.followers = followers
+
+          users[userId] = user
         } catch (err) {
           console.warn('error crawling user', userId, err)
-          if (!users[userId]) {
+          if (users[userId] === undefined) {
             users[userId] = null
           }
         }
