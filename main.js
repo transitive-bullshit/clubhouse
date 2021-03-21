@@ -13,15 +13,19 @@ async function main() {
   })
 
   const seedUserId = '13870'
+  // const seedUserId = userId
 
   // const profile = await clubhouse.getProfile(seedUserId)
   // console.log(JSON.stringify(profile, null, 2))
 
-  const followers = await clubhouse.getFollowers(seedUserId)
-  console.log(JSON.stringify(followers, null, 2))
+  // const followers = await clubhouse.getFollowers(seedUserId)
+  // console.log(JSON.stringify(followers, null, 2))
 
   // const following = await clubhouse.getFollowing(seedUserId)
   // console.log(JSON.stringify(following, null, 2))
+
+  const following = await clubhouse.getAllFollowing(seedUserId)
+  console.log(JSON.stringify(following, null, 2))
 }
 
 async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
@@ -30,7 +34,7 @@ async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
   const pendingUserIds = new Set()
   const users = {}
 
-  async function processUser(userId) {
+  function processUser(userId) {
     if (userId && users[userId] === undefined && !pendingUserIds.has(userId)) {
       pendingUserIds.add(userId)
 
@@ -43,7 +47,15 @@ async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
 
           users[userId] = user
 
-          // const following =
+          const following = await clubhouse.getAllFollowing(userId)
+          for (const followingUser of following) {
+            processUser(followingUser.user_id)
+          }
+
+          const followers = await clubhouse.getAllFollowers(userId)
+          for (const followerUser of followers) {
+            processUser(followerUser.user_id)
+          }
         } catch (err) {
           console.warn('error crawling user', userId, err)
           if (!users[userId]) {
@@ -56,7 +68,7 @@ async function crawlSocialGraph(clubhouse, seedUserId, opts = {}) {
     }
   }
 
-  await processUser(seedUserId)
+  processUser(seedUserId)
   await queue.onIdle()
 
   return users

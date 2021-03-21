@@ -1,4 +1,7 @@
 import got from 'got'
+import pThrottle from 'p-throttle'
+
+const MAX_PAGE_SIZE = 400
 
 export class ClubhouseClient {
   _apiBaseUrl = ''
@@ -11,11 +14,27 @@ export class ClubhouseClient {
   constructor(opts) {
     if (!opts) throw new Error('Missing required ClubhouseClient opts')
 
-    const { deviceId, userId, token } = opts
-    if (!deviceId)
+    const {
+      deviceId,
+      userId,
+      token,
+      throttle = {
+        limit: 1,
+        interval: 1000
+      }
+    } = opts
+
+    if (!deviceId) {
       throw new Error('Missing required ClubhouseClient opts.deviceId')
-    if (!userId) throw new Error('Missing required ClubhouseClient opts.userId')
-    if (!token) throw new Error('Missing required ClubhouseClient opts.token')
+    }
+
+    if (!userId) {
+      throw new Error('Missing required ClubhouseClient opts.userId')
+    }
+
+    if (!token) {
+      throw new Error('Missing required ClubhouseClient opts.token')
+    }
 
     this._apiBaseUrl = opts.apiBaseUrl || 'https://api.hipster.house/api'
 
@@ -25,6 +44,8 @@ export class ClubhouseClient {
     this._deviceId = deviceId
     this._userId = userId
     this._token = token
+
+    this._fetch = pThrottle(throttle)(this.__fetch)
 
     this._headers = {
       accept: '*/*',
@@ -68,34 +89,70 @@ export class ClubhouseClient {
   }
 
   getFollowers(userId, opts = {}) {
-    const { pageSize = 400, page = 1 } = opts
+    const { pageSize = MAX_PAGE_SIZE, page = 1 } = opts
 
     return this._fetch({
       endpoint: `/get_followers`,
       method: 'GET',
       searchParams: {
         user_id: userId,
-        page_size: pageSize,
+        page_size: Math.min(MAX_PAGE_SIZE, pageSize),
         page: page
       }
     })
   }
 
   getFollowing(userId, opts = {}) {
-    const { pageSize = 400, page = 1 } = opts
+    const { pageSize = MAX_PAGE_SIZE, page = 1 } = opts
 
     return this._fetch({
       endpoint: `/get_following`,
       method: 'GET',
       searchParams: {
         user_id: userId,
-        page_size: pageSize,
+        page_size: Math.min(MAX_PAGE_SIZE, pageSize),
         page: page
       }
     })
   }
 
-  _fetch({ endpoint, method = 'GET', body, gotOptions, headers, ...rest }) {
+  async getAllFollowing(userId, opts = {}) {
+    const { pageSize = MAX_PAGE_SIZE } = opts
+    let page = 1
+    let users = []
+
+    do {
+      const currentPage = await this.getFollowing(userId, {
+        pageSize,
+        page
+      })
+
+      users = users.concat(currentPage.users)
+      page = currentPage.next
+    } while (page)
+
+    return users
+  }
+
+  async getAllFollowers(userId, opts = {}) {
+    const { pageSize = MAX_PAGE_SIZE } = opts
+    let page = 1
+    let users = []
+
+    do {
+      const currentPage = await this.getFollowers(userId, {
+        pageSize,
+        page
+      })
+
+      users = users.concat(currentPage.users)
+      page = currentPage.next
+    } while (page)
+
+    return users
+  }
+
+  __fetch({ endpoint, method = 'GET', body, gotOptions, headers, ...rest }) {
     const apiUrl = `${this._apiBaseUrl}${endpoint}`
 
     const params = {
@@ -115,6 +172,7 @@ export class ClubhouseClient {
       params.json = body
     }
 
+    console.log(apiUrl, JSON.stringify(params, null, 2))
     return got(apiUrl, params).json()
   }
 }
