@@ -51,7 +51,7 @@ export class ClubhouseClient {
       endpoint: `/start_phone_number_auth`,
       method: 'POST',
       body: {
-        phoneNumber
+        phone_number: phoneNumber
       }
     })
   }
@@ -62,7 +62,7 @@ export class ClubhouseClient {
       endpoint: `/resend_phone_number_auth`,
       method: 'POST',
       body: {
-        phoneNumber
+        phone_number: phoneNumber
       }
     })
   }
@@ -73,8 +73,8 @@ export class ClubhouseClient {
       endpoint: `/complete_phone_number_auth`,
       method: 'POST',
       body: {
-        phoneNumber,
-        verificationCode
+        phone_number: phoneNumber,
+        verification_code: verificationCode
       }
     })
   }
@@ -93,7 +93,11 @@ export class ClubhouseClient {
     return this._fetch({
       endpoint: `/me`,
       method: 'POST',
-      body: {}
+      body: {
+        return_blocked_ids: true,
+        return_following_ids: true
+        // timezone_identifier
+      }
     })
   }
 
