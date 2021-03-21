@@ -27,10 +27,10 @@ async function main() {
   // const following = await clubhouse.getAllFollowing(seedUserId)
   // console.log(JSON.stringify(following, null, 2))
 
-  // const socialGraph = await crawlSocialGraph(clubhouse, seedUserId, {
-  //   maxUsers: 1000
+  // const users = await crawlSocialGraph(clubhouse, seedUserId, {
+  //   maxUsers: 100
   // })
-  // console.log(JSON.stringify(socialGraph, null, 2))
+  // console.log(JSON.stringify(users, null, 2))
 }
 
 main().catch((err) => {

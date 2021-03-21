@@ -1,7 +1,7 @@
 import PQueue from 'p-queue'
 
 import { ClubhouseClient } from './clubhouse-client'
-import { UserId, ClubhouseSocialGraph } from './types'
+import { UserId, SocialGraph, SocialGraphUserProfile } from './types'
 
 /**
  * Performs a BFS traversal over the Clubhouse social graph, starting from a
@@ -17,12 +17,10 @@ export async function crawlSocialGraph(
     concurrency?: number
     maxUsers?: number
   } = {}
-): Promise<ClubhouseSocialGraph> {
+): Promise<SocialGraph> {
   const queue = new PQueue({ concurrency })
   const pendingUserIds = new Set<string>()
-  const users = {}
-  const followingMap = {}
-  const followersMap = {}
+  const users: SocialGraph = {}
   let numUsers = 0
 
   function processUser(origUserId: UserId) {
@@ -30,6 +28,7 @@ export async function crawlSocialGraph(
     const userId = `${origUserId}`
 
     if (
+      origUserId &&
       userId &&
       users[userId] === undefined &&
       !pendingUserIds.has(userId) &&
@@ -44,12 +43,12 @@ export async function crawlSocialGraph(
           clubhouse.log(
             `crawling user ${userId} (${numUsersCrawled} users crawled)`
           )
-          const userProfile = await clubhouse.getProfile(userId)
-          if (!userProfile) {
+          const userProfileRes = await clubhouse.getProfile(userId)
+          if (!userProfileRes) {
             return
           }
 
-          const { user_profile: user } = userProfile
+          const user = userProfileRes.user_profile as SocialGraphUserProfile
           users[userId] = user
           clubhouse.log(
             `user ${userId} (${user.username}) found (${numUsersCrawled} users crawled)`
@@ -68,7 +67,7 @@ export async function crawlSocialGraph(
               processUser(followingUser.user_id)
             }
 
-            followingMap[userId] = following
+            user.following = following
           }
 
           {
@@ -84,7 +83,7 @@ export async function crawlSocialGraph(
               processUser(followerUser.user_id)
             }
 
-            followersMap[userId] = followers
+            user.followers = followers
           }
 
           // print incremental progress to stdout
@@ -93,14 +92,6 @@ export async function crawlSocialGraph(
           clubhouse.log('error crawling user', userId, err)
           if (users[userId] === undefined) {
             users[userId] = null
-          }
-
-          if (followingMap[userId] === undefined) {
-            followingMap[userId] = null
-          }
-
-          if (followersMap[userId] === undefined) {
-            followersMap[userId] = null
           }
         }
 
@@ -112,9 +103,5 @@ export async function crawlSocialGraph(
   processUser(seedUserId)
   await queue.onIdle()
 
-  return {
-    users,
-    followers: followersMap,
-    following: followingMap
-  }
+  return users
 }

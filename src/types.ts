@@ -14,12 +14,8 @@ export interface User {
   twitter?: string | null
 }
 
-export interface UserProfile {
-  user_id: number
-  name: string
+export interface UserProfile extends User {
   displayname: string
-  photo_url: string
-  username: string
   bio: string
   twitter: string
   instagram: string
@@ -64,22 +60,13 @@ export interface ClubRule {
 // Custom Types
 // ----------------------------------------------------------------------------
 
-export interface UserProfileMap {
-  [userId: string]: UserProfile | null
+export interface SocialGraphUserProfile extends UserProfile {
+  following: User[]
+  followers: User[]
 }
 
-export interface UserFollowingMap {
-  [userId: string]: User[] | null
-}
-
-export interface UserFollowersMap {
-  [userId: string]: User[] | null
-}
-
-export interface ClubhouseSocialGraph {
-  users: UserProfileMap
-  followers: UserFollowersMap
-  following: UserFollowingMap
+export interface SocialGraph {
+  [userId: string]: SocialGraphUserProfile | null
 }
 
 // API Types
@@ -110,7 +97,7 @@ export interface PagedUserAPIResponse extends ClubhouseAPIResponse {
 }
 
 export interface UserProfileAPIResponse extends ClubhouseAPIResponse {
-  user_profile: User
+  user_profile: UserProfile
 }
 
 export interface GetMeAPIResponse extends ClubhouseAPIResponse {
