@@ -28,7 +28,7 @@ async function main() {
   // console.log(JSON.stringify(following, null, 2))
 
   const users = await crawlSocialGraph(clubhouse, seedUserId, {
-    maxUsers: 100
+    maxUsers: 10000
   })
   console.log(JSON.stringify(users, null, 2))
 }

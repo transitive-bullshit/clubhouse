@@ -63,7 +63,7 @@ export class ClubhouseClient {
       appVersion = '0.1.28',
       throttle = {
         limit: 1,
-        interval: 3000
+        interval: 3200
       },
       headers,
       log = console.error.bind(console)
