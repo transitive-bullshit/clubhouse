@@ -87,7 +87,7 @@ export async function crawlSocialGraph(
           }
 
           // print incremental progress to stdout
-          console.log(JSON.stringify(user, null, 2))
+          console.log(JSON.stringify(user))
         } catch (err) {
           clubhouse.log('error crawling user', userId, err)
           if (users[userId] === undefined) {

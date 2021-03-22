@@ -4,10 +4,16 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {
   UserId,
+  ClubId,
   User,
   GetMeAPIResponse,
   UserProfileAPIResponse,
-  PagedUserAPIResponse
+  PagedUserAPIResponse,
+  PagedClubAPIResponse,
+  WaitlistStatusAPIResponse,
+  GetClubAPIResponse,
+  GetTopicsAPIResponse,
+  ClubhouseAPIResponse
 } from './types'
 
 const MAX_PAGE_SIZE = 400
@@ -159,9 +165,36 @@ export class ClubhouseClient {
     })
   }
 
-  async checkWaitlistStatus() {
+  async getClub(clubId: ClubId): Promise<GetClubAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_club`,
+      method: 'POST',
+      body: {
+        club_id: clubId
+      }
+    })
+  }
+
+  async followClub(clubId: ClubId): Promise<ClubhouseAPIResponse> {
+    return this._fetch({
+      endpoint: `/follow_club`,
+      method: 'POST',
+      body: {
+        club_id: clubId
+      }
+    })
+  }
+
+  async checkWaitlistStatus(): Promise<WaitlistStatusAPIResponse> {
     return this._fetch({
       endpoint: `/check_waitlist_status`
+    })
+  }
+
+  async getAllTopics(): Promise<GetTopicsAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_all_topics`,
+      method: 'GET'
     })
   }
 
@@ -203,6 +236,32 @@ export class ClubhouseClient {
         user_id: userId,
         page_size: Math.min(MAX_PAGE_SIZE, pageSize),
         page: page
+      }
+    })
+  }
+
+  async searchUsers(query: string): Promise<PagedUserAPIResponse> {
+    return this._fetch({
+      endpoint: `/search_users`,
+      method: 'POST',
+      body: {
+        query,
+        cofollows_only: false,
+        followers_only: false,
+        following_only: false
+      }
+    })
+  }
+
+  async searchClubs(query: string): Promise<PagedClubAPIResponse> {
+    return this._fetch({
+      endpoint: `/search_clubs`,
+      method: 'POST',
+      body: {
+        query,
+        cofollows_only: false,
+        followers_only: false,
+        following_only: false
       }
     })
   }

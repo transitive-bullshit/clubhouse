@@ -2,6 +2,7 @@
 // ----------------------------------------------------------------------------
 
 export type UserId = string | number
+export type ClubId = string | number
 
 export interface User {
   user_id: number
@@ -57,6 +58,12 @@ export interface ClubRule {
   title: string
 }
 
+export interface Topic {
+  title: string
+  id: number
+  abbreviated_title: string
+}
+
 // Custom Types
 // ----------------------------------------------------------------------------
 
@@ -96,6 +103,13 @@ export interface PagedUserAPIResponse extends ClubhouseAPIResponse {
   previous: number | null
 }
 
+export interface PagedClubAPIResponse extends ClubhouseAPIResponse {
+  clubs: Club[]
+  count: number
+  next: number | null
+  previous: number | null
+}
+
 export interface UserProfileAPIResponse extends ClubhouseAPIResponse {
   user_profile: UserProfile
 }
@@ -114,4 +128,35 @@ export interface GetMeAPIResponse extends ClubhouseAPIResponse {
   email: string
   feature_flags: string[]
   user_profile: User
+}
+
+export interface WaitlistStatusAPIResponse extends ClubhouseAPIResponse {
+  is_waitlisted: boolean
+  is_onboarding: boolean
+  analytics_properties: {
+    SignUpWeek: string
+    SignUpDay: string
+  }
+  enable_twitter: boolean
+  num_preselect_follows: number
+  invited_by_user_profile: User | null
+  club: Club | null
+}
+
+export interface GetClubAPIResponse extends ClubhouseAPIResponse {
+  club: Club
+  is_admin: boolean
+  is_member: boolean
+  is_follower: boolean
+  is_pending_accept: boolean
+  is_pending_approval: boolean
+  added_by_user_profile: User | null
+  member_user_ids: string[]
+  num_invites: number
+  invite_link: string | null
+  topics: Topic[]
+}
+
+export interface GetTopicsAPIResponse extends ClubhouseAPIResponse {
+  topics: Topic[]
 }
