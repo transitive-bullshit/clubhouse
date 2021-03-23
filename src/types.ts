@@ -3,6 +3,7 @@
 
 export type UserId = string | number
 export type ClubId = string | number
+export type TopicId = string | number
 
 export interface User {
   user_id: number
@@ -62,6 +63,10 @@ export interface Topic {
   title: string
   id: number
   abbreviated_title: string
+}
+
+export interface TopLevelTopic extends Topic {
+  topics: Topic[]
 }
 
 // Custom Types
@@ -157,6 +162,10 @@ export interface GetClubAPIResponse extends ClubhouseAPIResponse {
   topics: Topic[]
 }
 
-export interface GetTopicsAPIResponse extends ClubhouseAPIResponse {
-  topics: Topic[]
+export interface GetAllTopicsAPIResponse extends ClubhouseAPIResponse {
+  topics: TopLevelTopic[]
+}
+
+export interface GetTopicAPIResponse extends ClubhouseAPIResponse {
+  topic: Topic | TopLevelTopic
 }

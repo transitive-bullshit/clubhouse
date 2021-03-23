@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import {
   UserId,
   ClubId,
+  TopicId,
   User,
   GetMeAPIResponse,
   UserProfileAPIResponse,
@@ -12,8 +13,9 @@ import {
   PagedClubAPIResponse,
   WaitlistStatusAPIResponse,
   GetClubAPIResponse,
-  GetTopicsAPIResponse,
-  ClubhouseAPIResponse
+  GetAllTopicsAPIResponse,
+  ClubhouseAPIResponse,
+  GetTopicAPIResponse
 } from './types'
 
 const MAX_PAGE_SIZE = 400
@@ -191,10 +193,40 @@ export class ClubhouseClient {
     })
   }
 
-  async getAllTopics(): Promise<GetTopicsAPIResponse> {
+  async getAllTopics(): Promise<GetAllTopicsAPIResponse> {
     return this._fetch({
       endpoint: `/get_all_topics`,
       method: 'GET'
+    })
+  }
+
+  async getTopic(topicId: TopicId): Promise<GetTopicAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_topic`,
+      method: 'POST',
+      body: {
+        topic_id: topicId
+      }
+    })
+  }
+
+  async getClubsForTopic(topicId: TopicId): Promise<PagedClubAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_clubs_for_topic`,
+      method: 'POST',
+      body: {
+        topic_id: topicId
+      }
+    })
+  }
+
+  async getUsersForTopic(topicId: TopicId): Promise<PagedUserAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_users_for_topic`,
+      method: 'POST',
+      body: {
+        topic_id: topicId
+      }
     })
   }
 
