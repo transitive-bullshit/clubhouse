@@ -12,6 +12,8 @@ import {
 /**
  * Performs a BFS traversal over the Clubhouse social graph, starting from a
  * given seed user and expanding outwards from there.
+ *
+ * Supports incremental traversal via previously visited user IDs.
  */
 export async function crawlSocialGraph(
   clubhouse: ClubhouseClient,

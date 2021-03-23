@@ -43,7 +43,7 @@ async function main() {
     existingUserIds.filter((userId) => !existingUsers[userId].following)
   )
 
-  console.log('crawling', {
+  clubhouse.log('crawling', {
     existingUserFullIds: existingUserFullIds.size,
     existingUserPendingIds: existingUserPendingIds.size
   })
