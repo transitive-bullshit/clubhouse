@@ -48,7 +48,7 @@ export async function crawlSocialGraph(
     console.log(JSON.stringify(user, null, 2))
   }
 
-  function filterUser({
+  function filterAndCrawlSocialUser({
     user,
     following,
     followers
@@ -106,13 +106,13 @@ export async function crawlSocialGraph(
       numUsers < maxUsers
     ) {
       pendingUserIds.add(userId)
-      numUsers++
 
       queue.add(async () => {
         try {
+          numUsers++
           const numUsersCrawled = Object.keys(users).length
           clubhouse.log(
-            `crawling user ${userId} (${numUsersCrawled} users crawled)`
+            `crawling user ${userId}; ${numUsersCrawled} users crawled; ${pendingUserIds.size} users pending`
           )
           const userProfileRes = await clubhouse.getProfile(userId)
           if (!userProfileRes) {
@@ -127,7 +127,7 @@ export async function crawlSocialGraph(
           }
 
           clubhouse.log(
-            `user ${userId} (${user.username}) found (${numUsersCrawled} users crawled)`
+            `user ${userId} (${user.username}) found; ${numUsersCrawled} users crawled; ${pendingUserIds.size} users pending`
           )
 
           // fetch all of the users following this user
@@ -143,11 +143,14 @@ export async function crawlSocialGraph(
             maxUsers
           })
           clubhouse.log(
-            `user ${userId} (${user.username}) found ${followers.length}/${user.num_followers} followers)`
+            `user ${userId} (${user.username}) found ${followers.length}/${user.num_followers} followers`
           )
 
-          // print incremental progress to stdout
-          const socialUser = filterUser({ user, following, followers })
+          const socialUser = filterAndCrawlSocialUser({
+            user,
+            following,
+            followers
+          })
           printUser(socialUser)
 
           users[userId] = socialUser

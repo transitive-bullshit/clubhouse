@@ -43,8 +43,15 @@ async function main() {
     existingUserIds.filter((userId) => !existingUsers[userId].following)
   )
 
+  console.log('crawling', {
+    existingUserFullIds: existingUserFullIds.size,
+    existingUserPendingIds: existingUserPendingIds.size
+  })
+
   const users = await crawlSocialGraph(clubhouse, seedUserId, {
-    maxUsers: 100000
+    maxUsers: 100000,
+    incrementalUserIds: existingUserFullIds,
+    incrementalPendingUserIds: existingUserPendingIds
   })
   console.log(JSON.stringify(users, null, 2))
 }
