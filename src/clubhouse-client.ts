@@ -33,7 +33,7 @@ export interface ClubhouseClientConfig {
   throttle?: {
     limit: number
     interval: number
-  }
+  } | null
   log?: any
   headers?: any
 }
@@ -87,7 +87,7 @@ export class ClubhouseClient {
     this._authToken = authToken
 
     // throttle clubhouse API calls to mitigate rate limiting
-    this._fetch = pThrottle(throttle)(this.__fetch)
+    this._fetch = throttle ? pThrottle(throttle)(this.__fetch) : this.__fetch
 
     this._log = log || noop
 
