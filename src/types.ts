@@ -69,6 +69,40 @@ export interface TopLevelTopic extends Topic {
   topics: Topic[]
 }
 
+export interface Event {
+  event_id: number
+  name: string
+  description: string
+  time_start: string
+  club: Club
+  is_member_only: boolean
+  url: string
+  hosts: User[]
+  channel: Channel | null
+  is_expired: boolean
+}
+
+export interface Channel {
+  creator_user_profile_id: number
+  channel_id: number
+  channel: string
+  topic: string
+  is_private: boolean
+  is_social_mode: boolean
+  url: string
+  feature_flags: [string]
+  club: Club | null
+  club_name: string
+  club_id: number
+  welcome_for_user_profile: User | null
+  num_other: number
+  has_blocked_speakers: boolean
+  is_explore_channel: boolean
+  num_speakers: number
+  num_all: number
+  users: User[]
+}
+
 // Custom Types
 // ----------------------------------------------------------------------------
 
@@ -168,4 +202,39 @@ export interface GetAllTopicsAPIResponse extends ClubhouseAPIResponse {
 
 export interface GetTopicAPIResponse extends ClubhouseAPIResponse {
   topic: Topic | TopLevelTopic
+}
+
+export interface GetChannelsAPIResponse extends ClubhouseAPIResponse {
+  channels: Channel[]
+  events: Event[]
+}
+
+export interface JoinChannelAPIResponse extends ClubhouseAPIResponse {
+  creator_user_profile_id: number
+  channel_id: number
+  channel: string
+  topic: string
+  is_private: boolean
+  is_social_mode: boolean
+  url: string
+  feature_flags: [string]
+  club: Club
+  club_name: string
+  club_id: number
+  welcome_for_user_profile: User | null
+  is_handraise_enabled: boolean
+  handraise_permission: number
+  is_club_member: boolean
+  is_club_admin: boolean
+  users: User[]
+  success: boolean
+  is_empty: boolean
+  token: string
+  rtm_token: string
+  pubnub_token: string
+  pubnub_origin: string
+  pubnub_heartbeat_value: number
+  pubnub_heartbeat_interval: number
+  pubnub_enable: boolean
+  agora_native_mute: boolean
 }

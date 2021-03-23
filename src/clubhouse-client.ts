@@ -15,7 +15,9 @@ import {
   GetClubAPIResponse,
   GetAllTopicsAPIResponse,
   ClubhouseAPIResponse,
-  GetTopicAPIResponse
+  GetTopicAPIResponse,
+  GetChannelsAPIResponse,
+  JoinChannelAPIResponse
 } from './types'
 
 const MAX_PAGE_SIZE = 400
@@ -226,6 +228,24 @@ export class ClubhouseClient {
       method: 'POST',
       body: {
         topic_id: topicId
+      }
+    })
+  }
+
+  async getChannels(): Promise<GetChannelsAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_channels`,
+      method: 'POST',
+      body: {}
+    })
+  }
+
+  async joinChannel(channel): Promise<JoinChannelAPIResponse> {
+    return this._fetch({
+      endpoint: `/join_channel`,
+      method: 'POST',
+      body: {
+        channel
       }
     })
   }
