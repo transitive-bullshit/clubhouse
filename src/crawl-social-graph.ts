@@ -71,7 +71,7 @@ export async function crawlSocialGraph(
       }
     }
 
-    for (const u of user.mutual_follows) {
+    for (const u of user.mutual_follows || []) {
       if (processUser(u.user_id)) {
         printUser(u)
       }
@@ -84,7 +84,7 @@ export async function crawlSocialGraph(
     const socialUser = user as SocialGraphUserProfile
     socialUser.following = following.map((u) => u.user_id)
     socialUser.followers = followers.map((u) => u.user_id)
-    socialUser.club_ids = user.clubs.map((c) => c.club_id)
+    socialUser.club_ids = (user.clubs || []).map((c) => c.club_id)
     socialUser.invited_by_user_profile_id =
       user.invited_by_user_profile?.user_id
 
@@ -167,9 +167,9 @@ export async function crawlSocialGraph(
       })
 
       return true
+    } else {
+      return false
     }
-
-    return false
   }
 
   processUser(seedUserId)
