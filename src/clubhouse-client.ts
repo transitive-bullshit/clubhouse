@@ -73,7 +73,7 @@ export class ClubhouseClient {
       appVersion = '0.1.28',
       throttle = {
         limit: 1,
-        interval: 3200
+        interval: 3500
       },
       headers,
       log = console.error.bind(console)
@@ -250,48 +250,6 @@ export class ClubhouseClient {
     })
   }
 
-  async getFollowers(
-    userId: UserId,
-    {
-      pageSize = MAX_PAGE_SIZE,
-      page = 1
-    }: {
-      pageSize?: number
-      page?: number
-    } = {}
-  ): Promise<PagedUserAPIResponse> {
-    return this._fetch({
-      endpoint: `/get_followers`,
-      method: 'GET',
-      searchParams: {
-        user_id: userId,
-        page_size: Math.min(MAX_PAGE_SIZE, pageSize),
-        page: page
-      }
-    })
-  }
-
-  async getFollowing(
-    userId: UserId,
-    {
-      pageSize = MAX_PAGE_SIZE,
-      page = 1
-    }: {
-      pageSize?: number
-      page?: number
-    } = {}
-  ): Promise<PagedUserAPIResponse> {
-    return this._fetch({
-      endpoint: `/get_following`,
-      method: 'GET',
-      searchParams: {
-        user_id: userId,
-        page_size: Math.min(MAX_PAGE_SIZE, pageSize),
-        page: page
-      }
-    })
-  }
-
   async searchUsers(query: string): Promise<PagedUserAPIResponse> {
     return this._fetch({
       endpoint: `/search_users`,
@@ -314,6 +272,48 @@ export class ClubhouseClient {
         cofollows_only: false,
         followers_only: false,
         following_only: false
+      }
+    })
+  }
+
+  async getFollowers(
+    userId: UserId,
+    {
+      pageSize = MAX_PAGE_SIZE,
+      page = 1
+    }: {
+      pageSize?: number
+      page?: number
+    } = {}
+  ): Promise<PagedUserAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_followers`,
+      method: 'GET',
+      searchParams: {
+        user_id: userId,
+        page_size: pageSize,
+        page
+      }
+    })
+  }
+
+  async getFollowing(
+    userId: UserId,
+    {
+      pageSize = MAX_PAGE_SIZE,
+      page = 1
+    }: {
+      pageSize?: number
+      page?: number
+    } = {}
+  ): Promise<PagedUserAPIResponse> {
+    return this._fetch({
+      endpoint: `/get_following`,
+      method: 'GET',
+      searchParams: {
+        user_id: userId,
+        page_size: pageSize,
+        page
       }
     })
   }
@@ -368,6 +368,13 @@ export class ClubhouseClient {
       })
 
       users = users.concat(currentPage.users)
+      // console.log({
+      //   users: currentPage.users.length,
+      //   total: users.length,
+      //   count: currentPage.count,
+      //   previous: currentPage.previous,
+      //   next: currentPage.next
+      // })
       page = currentPage.next
 
       if (users.length >= maxUsers) {

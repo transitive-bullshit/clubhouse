@@ -1,7 +1,13 @@
 import PQueue from 'p-queue'
 
 import { ClubhouseClient } from './clubhouse-client'
-import { UserId, SocialGraph, SocialGraphUserProfile } from './types'
+import {
+  UserId,
+  SocialGraph,
+  User,
+  UserProfile,
+  SocialGraphUserProfile
+} from './types'
 
 /**
  * Performs a BFS traversal over the Clubhouse social graph, starting from a
@@ -11,9 +17,13 @@ export async function crawlSocialGraph(
   clubhouse: ClubhouseClient,
   seedUserId: UserId,
   {
+    incrementalUserIds = new Set<string>(),
+    incrementalPendingUserIds = new Set<string>(),
     concurrency = 4,
     maxUsers = Number.POSITIVE_INFINITY
   }: {
+    incrementalUserIds?: Set<string>
+    incrementalPendingUserIds?: Set<string>
     concurrency?: number
     maxUsers?: number
   } = {}
@@ -22,6 +32,66 @@ export async function crawlSocialGraph(
   const pendingUserIds = new Set<string>()
   const users: SocialGraph = {}
   let numUsers = 0
+
+  function printUser(user: User | SocialGraphUserProfile) {
+    delete user.last_active_minutes
+
+    if (!user.bio) {
+      delete user.bio
+    }
+
+    if (!user.twitter) {
+      delete user.twitter
+    }
+
+    // print incremental progress to stdout
+    console.log(JSON.stringify(user, null, 2))
+  }
+
+  function filterUser({
+    user,
+    following,
+    followers
+  }: {
+    user: UserProfile
+    following: User[]
+    followers: User[]
+  }) {
+    for (const u of following) {
+      if (processUser(u.user_id)) {
+        printUser(u)
+      }
+    }
+
+    for (const u of followers) {
+      if (processUser(u.user_id)) {
+        printUser(u)
+      }
+    }
+
+    for (const u of user.mutual_follows) {
+      if (processUser(u.user_id)) {
+        printUser(u)
+      }
+    }
+
+    if (processUser(user.invited_by_user_profile?.user_id)) {
+      printUser(user.invited_by_user_profile)
+    }
+
+    const socialUser = user as SocialGraphUserProfile
+    socialUser.following = following.map((u) => u.user_id)
+    socialUser.followers = followers.map((u) => u.user_id)
+    socialUser.club_ids = user.clubs.map((c) => c.club_id)
+    socialUser.invited_by_user_profile_id =
+      user.invited_by_user_profile?.user_id
+
+    delete socialUser.clubs
+    delete socialUser.mutual_follows
+    delete socialUser.invited_by_user_profile
+
+    return socialUser
+  }
 
   function processUser(origUserId: UserId) {
     // ensure that all user IDs we work with are strings
@@ -32,6 +102,7 @@ export async function crawlSocialGraph(
       userId &&
       users[userId] === undefined &&
       !pendingUserIds.has(userId) &&
+      !incrementalUserIds.has(userId) &&
       numUsers < maxUsers
     ) {
       pendingUserIds.add(userId)
@@ -55,45 +126,31 @@ export async function crawlSocialGraph(
             return
           }
 
-          users[userId] = user
           clubhouse.log(
             `user ${userId} (${user.username}) found (${numUsersCrawled} users crawled)`
           )
 
-          {
-            // fetch all of the users following this user
-            const following = await clubhouse.getAllFollowing(userId, {
-              maxUsers
-            })
-            clubhouse.log(
-              `user ${userId} (${user.username}) found ${following.length} following`
-            )
+          // fetch all of the users following this user
+          const following = await clubhouse.getAllFollowing(userId, {
+            maxUsers
+          })
+          clubhouse.log(
+            `user ${userId} (${user.username}) found ${following.length}/${user.num_following} following`
+          )
 
-            for (const followingUser of following) {
-              processUser(followingUser.user_id)
-            }
-
-            user.following = following
-          }
-
-          {
-            // fetch all of this user's followers
-            const followers = await clubhouse.getAllFollowers(userId, {
-              maxUsers
-            })
-            clubhouse.log(
-              `user ${userId} (${user.username}) found ${followers.length} followers`
-            )
-
-            for (const followerUser of followers) {
-              processUser(followerUser.user_id)
-            }
-
-            user.followers = followers
-          }
+          // fetch all of this user's followers
+          const followers = await clubhouse.getAllFollowers(userId, {
+            maxUsers
+          })
+          clubhouse.log(
+            `user ${userId} (${user.username}) found ${followers.length}/${user.num_followers} followers)`
+          )
 
           // print incremental progress to stdout
-          console.log(JSON.stringify(user, null, 2))
+          const socialUser = filterUser({ user, following, followers })
+          printUser(socialUser)
+
+          users[userId] = socialUser
         } catch (err) {
           clubhouse.log('error crawling user', userId, err)
           if (users[userId] === undefined) {
@@ -103,10 +160,18 @@ export async function crawlSocialGraph(
 
         pendingUserIds.delete(userId)
       })
+
+      return true
     }
+
+    return false
   }
 
   processUser(seedUserId)
+  for (const userId of incrementalPendingUserIds) {
+    processUser(userId)
+  }
+
   await queue.onIdle()
 
   return users

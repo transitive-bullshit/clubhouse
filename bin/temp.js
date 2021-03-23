@@ -15,7 +15,7 @@ async function main() {
     users[id] = user
   }
 
-  const userIds = Object.keys(users)
+  let userIds = Object.keys(users)
 
   for (const userId of userIds) {
     const user = users[userId]
@@ -63,6 +63,20 @@ async function main() {
     user.followers = (user.followers || []).map((u) => u.user_id)
     user.clubs = (user.clubs || []).map((c) => c.club_id)
     delete user.topics
+  }
+
+  userIds = Object.keys(users)
+  for (const userId of userIds) {
+    const user = users[userId]
+    delete user.last_active_minutes
+
+    if (!user.bio) {
+      delete user.bio
+    }
+
+    if (!user.twitter) {
+      delete user.twitter
+    }
   }
 
   fs.writeFileSync('out2.json', JSON.stringify(users, null, 1))
