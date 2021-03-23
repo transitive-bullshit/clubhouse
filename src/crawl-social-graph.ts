@@ -45,10 +45,16 @@ export async function crawlSocialGraph(
           )
           const userProfileRes = await clubhouse.getProfile(userId)
           if (!userProfileRes) {
+            users[userId] = null
             return
           }
 
           const user = userProfileRes.user_profile as SocialGraphUserProfile
+          if (!user) {
+            users[userId] = null
+            return
+          }
+
           users[userId] = user
           clubhouse.log(
             `user ${userId} (${user.username}) found (${numUsersCrawled} users crawled)`
@@ -87,7 +93,7 @@ export async function crawlSocialGraph(
           }
 
           // print incremental progress to stdout
-          console.log(JSON.stringify(user))
+          console.log(JSON.stringify(user, null, 2))
         } catch (err) {
           clubhouse.log('error crawling user', userId, err)
           if (users[userId] === undefined) {

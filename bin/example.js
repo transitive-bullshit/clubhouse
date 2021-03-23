@@ -1,10 +1,13 @@
-const { ClubhouseClient, crawlSocialGraph } = require('./build')
+'use strict'
+
+require('dotenv-safe').config()
+const { ClubhouseClient, crawlSocialGraph } = require('../build')
 
 async function main() {
   // TODO: remove these hard-coded constants
-  const authToken = '20bff16dc1015db14e0ffabad011813e758347ef'
-  const deviceId = '3EE60C75-C867-4BEC-86D5-2B9ED33844D2'
-  const userId = '2481724' // travis fischer
+  const authToken = process.env.CLUBHOUSE_AUTH_TOKEN
+  const deviceId = process.env.CLUBHOUSE_DEVICE_ID
+  const userId = process.env.CLUBHOUSE_USER_ID
 
   const clubhouse = new ClubhouseClient({
     authToken,
