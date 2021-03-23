@@ -108,10 +108,10 @@ export async function crawlSocialGraph(
       numUsers < maxUsers
     ) {
       pendingUserIds.add(userId)
+      numUsers++
 
       queue.add(async () => {
         try {
-          numUsers++
           const numUsersCrawled = Object.keys(users).length
           clubhouse.log(
             `crawling user ${userId}; ${numUsersCrawled} users crawled; ${pendingUserIds.size} users pending`
