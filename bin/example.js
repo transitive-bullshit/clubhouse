@@ -34,7 +34,7 @@ async function main() {
   // console.log(followers.length)
   // console.log(JSON.stringify(followers, null, 2))
 
-  const existingUsers = require('../data/crawl-2-5k-clean.json')
+  const existingUsers = require('../data/users.json')
   const existingUserIds = Object.keys(existingUsers)
   const existingUserFullIds = new Set(
     existingUserIds.filter((userId) => !!existingUsers[userId].following)
