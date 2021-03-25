@@ -3,6 +3,7 @@
 const fs = require('fs')
 const raw = require('../out.json')
 
+// random helper script to format output of crawler
 async function main() {
   const users = {}
 

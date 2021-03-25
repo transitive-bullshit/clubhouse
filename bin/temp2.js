@@ -4,7 +4,7 @@ const fs = require('fs')
 const users = require('../data/users.json')
 
 async function main() {
-  const newUsers = require('../data/crawl-3-interrupted.json')
+  const newUsers = require('../data/crawl-4-5k.json')
   const numUsersOld = Object.keys(users).length
 
   for (const user of newUsers) {
