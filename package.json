@@ -1,7 +1,7 @@
 {
   "name": "clubhouse-client",
   "version": "0.1.0",
-  "private": true,
+  "description": "Clubhouse API client.",
   "license": "MIT",
   "main": "build/index.js",
   "typings": "build/index.d.ts",

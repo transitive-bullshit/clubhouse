@@ -1,6 +1,6 @@
-# Clubhouse Social Graph
+# Clubhouse API
 
-> Crawler for the Clubhouse social graph using their unofficial API.
+> TypeScript Clubhouse API client.
 
 [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 

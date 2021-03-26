@@ -3,6 +3,7 @@
 require('dotenv-safe').config()
 const { ClubhouseClient, crawlSocialGraph } = require('../build')
 
+// crawler for the clubhouse social graph
 async function main() {
   // TODO: remove these hard-coded constants
   const authToken = process.env.CLUBHOUSE_AUTH_TOKEN
