@@ -4,6 +4,13 @@
 
 [![NPM](https://img.shields.io/npm/v/clubhouse-client.svg)](https://www.npmjs.com/package/clubhouse-client) [![Build Status](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml/badge.svg)](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
+## Features
+
+- 🤙 **TypeScript** - Simple, clean TS/JS wrapper for the Clubhouse API.
+- 🤖 **Crawling** - Comes with a built-in crawler for the Clubhouse social graph.
+- 🚀 **Rate Limits** - Built-in throttling for Clubhouse rate limits.
+- 💪 **Robust** - Built-in retry logic with exponential falloff via [got](https://github.com/sindresorhus/got).
+
 ## Install
 
 ```sh
@@ -54,7 +61,17 @@ const allFollowing = await clubhouse.getAllFollowing(exampleUserId)
 const allFollowers = await clubhouse.getAllFollowers(exampleUserId)
 ```
 
-See [example.js](bin/example.js) for a full Node.js example that uses a previously authenticated user.
+See [example.js](bin/example.js) for a basic Node.js example that uses a previously authenticated user.
+
+See [crawler.js](bin/crawler.js) for a more advanced incremental Node.js crawler that will crawl the Clubhouse social graph.
+
+## Rate Limits
+
+By default, the ClubhouseClient is set to make a maximum of one API call per 3.5 seconds, which empirically gets past most Clubhouse rate limits.
+
+You'll definitely still run into some, and it's up to you how to best handle them. PLEASE DO NOT SPAM THE CLUBHOUSE API.
+
+You can customize the default `ClubhouseClient` throttling via the `throttle` parameter which uses [p-throttle](https://github.com/sindresorhus/p-throttle) under the hood.
 
 ## Related
 

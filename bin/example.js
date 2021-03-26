@@ -1,11 +1,10 @@
 'use strict'
 
 require('dotenv-safe').config()
-const { ClubhouseClient, crawlSocialGraph } = require('../build')
+const { ClubhouseClient } = require('../build')
 
-// crawler for the clubhouse social graph
+// basic example of how to use the ClubhouseClient for a previously authenticated user
 async function main() {
-  // TODO: remove these hard-coded constants
   const authToken = process.env.CLUBHOUSE_AUTH_TOKEN
   const deviceId = process.env.CLUBHOUSE_DEVICE_ID
   const userId = process.env.CLUBHOUSE_USER_ID
@@ -17,46 +16,22 @@ async function main() {
   })
 
   const seedUserId = '4'
-  // const seedUserId = userId
 
-  // const profile = await clubhouse.getProfile(seedUserId)
-  // console.log(JSON.stringify(profile, null, 2))
+  const profile = await clubhouse.getProfile(seedUserId)
+  console.log(JSON.stringify(profile, null, 2))
 
-  // const followers = await clubhouse.getFollowers(seedUserId)
-  // console.log(JSON.stringify(followers, null, 2))
+  const followers = await clubhouse.getFollowers(seedUserId)
+  console.log(JSON.stringify(followers, null, 2))
 
-  // const following = await clubhouse.getFollowing(seedUserId)
-  // console.log(JSON.stringify(following, null, 2))
+  const following = await clubhouse.getFollowing(seedUserId)
+  console.log(JSON.stringify(following, null, 2))
 
-  // const following = await clubhouse.getAllFollowing(seedUserId)
-  // console.log(JSON.stringify(following, null, 2))
+  const following = await clubhouse.getAllFollowing(seedUserId)
+  console.log(JSON.stringify(following, null, 2))
 
-  // const followers = await clubhouse.getAllFollowers(seedUserId)
-  // console.log(followers.length)
-  // console.log(JSON.stringify(followers, null, 2))
-
-  const isFullUser = (user) => user.following || user.invited_by_user_profile_id
-
-  const existingUsers = require('../data/users.json')
-  const existingUserIds = Object.keys(existingUsers)
-  const existingUserFullIds = new Set(
-    existingUserIds.filter((userId) => !!isFullUser(existingUsers[userId]))
-  )
-  const existingUserPendingIds = new Set(
-    existingUserIds.filter((userId) => !isFullUser(existingUsers[userId]))
-  )
-
-  clubhouse.log('crawling', {
-    existingUserFullIds: existingUserFullIds.size,
-    existingUserPendingIds: existingUserPendingIds.size
-  })
-
-  const users = await crawlSocialGraph(clubhouse, seedUserId, {
-    maxUsers: 100000,
-    incrementalUserIds: existingUserFullIds,
-    incrementalPendingUserIds: existingUserPendingIds
-  })
-  console.log(JSON.stringify(users, null, 2))
+  const followers = await clubhouse.getAllFollowers(seedUserId)
+  console.log(followers.length)
+  console.log(JSON.stringify(followers, null, 2))
 }
 
 main().catch((err) => {
