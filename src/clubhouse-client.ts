@@ -101,8 +101,8 @@ export class ClubhouseClient {
     }
   }
 
-  get isAuthenticated() {
-    return this._authToken && this._deviceId && this._userId
+  get isAuthenticated(): boolean {
+    return !!(this._authToken && this._deviceId && this._userId)
   }
 
   get log() {
