@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Clubhouse API client.",
   "license": "MIT",
+  "author": "Travis Fischer <travis@transitivebullsh.it>",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
   "type": "commonjs",

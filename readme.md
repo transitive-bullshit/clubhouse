@@ -1,8 +1,16 @@
 # Clubhouse API
 
-> TypeScript Clubhouse API client.
+> Clubhouse API client for TypeScript.
 
-[![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
+[![NPM](https://img.shields.io/npm/v/clubhouse-client.svg)](https://www.npmjs.com/package/clubhouse-client) [![Build Status](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml/badge.svg)](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
+
+## Install
+
+```sh
+npm install --save clubhouse-client
+# or
+yarn add clubhouse-client
+```
 
 ## Usage
 
@@ -60,6 +68,6 @@ Happy Hacking 🙃
 
 ## License
 
-MIT © [Travis Fischer](https://transitivebullsh.it)
+MIT © [Travis Fischer](https://transitivebullsh.it) and [Tim Saval](https://twitter.com/timsaval)
 
 Support my OSS work by <a href="https://twitter.com/transitive_bs">following me on twitter <img src="https://storage.googleapis.com/saasify-assets/twitter-logo.svg" alt="twitter" height="24px" align="center"></a>
