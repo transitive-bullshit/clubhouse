@@ -82,8 +82,10 @@ export async function crawlSocialGraph(
     }
 
     const socialUser = user as SocialGraphUserProfile
-    socialUser.following = following.map((u) => u.user_id)
-    socialUser.followers = followers.map((u) => u.user_id)
+    socialUser.following = null // TODO: temporary
+    socialUser.followers = null // TODO: temporary
+    // socialUser.following = following.map((u) => u.user_id)
+    // socialUser.followers = followers.map((u) => u.user_id)
     socialUser.club_ids = (user.clubs || []).map((c) => c.club_id)
     socialUser.invited_by_user_profile_id =
       user.invited_by_user_profile?.user_id
@@ -132,21 +134,25 @@ export async function crawlSocialGraph(
             `user ${userId} (${user.username}) found; ${numUsersCrawled} users crawled; ${pendingUserIds.size} users pending`
           )
 
-          // fetch all of the users following this user
-          const following = await clubhouse.getAllFollowing(userId, {
-            maxUsers
-          })
-          clubhouse.log(
-            `user ${userId} (${user.username}) found ${following.length}/${user.num_following} following`
-          )
+          // TODO: temporary
+          const following = []
+          const followers = []
 
-          // fetch all of this user's followers
-          const followers = await clubhouse.getAllFollowers(userId, {
-            maxUsers
-          })
-          clubhouse.log(
-            `user ${userId} (${user.username}) found ${followers.length}/${user.num_followers} followers`
-          )
+          // fetch all of the users following this user
+          // const following = await clubhouse.getAllFollowing(userId, {
+          //   maxUsers
+          // })
+          // clubhouse.log(
+          //   `user ${userId} (${user.username}) found ${following.length}/${user.num_following} following`
+          // )
+
+          // // fetch all of this user's followers
+          // const followers = await clubhouse.getAllFollowers(userId, {
+          //   maxUsers
+          // })
+          // clubhouse.log(
+          //   `user ${userId} (${user.username}) found ${followers.length}/${user.num_followers} followers`
+          // )
 
           const socialUser = filterAndCrawlSocialUser({
             user,

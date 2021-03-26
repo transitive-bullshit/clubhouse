@@ -34,13 +34,15 @@ async function main() {
   // console.log(followers.length)
   // console.log(JSON.stringify(followers, null, 2))
 
+  const isFullUser = (user) => user.following || user.invited_by_user_profile_id
+
   const existingUsers = require('../data/users.json')
   const existingUserIds = Object.keys(existingUsers)
   const existingUserFullIds = new Set(
-    existingUserIds.filter((userId) => !!existingUsers[userId].following)
+    existingUserIds.filter((userId) => !!isFullUser(existingUsers[userId]))
   )
   const existingUserPendingIds = new Set(
-    existingUserIds.filter((userId) => !existingUsers[userId].following)
+    existingUserIds.filter((userId) => !isFullUser(existingUsers[userId]))
   )
 
   clubhouse.log('crawling', {
