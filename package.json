@@ -1,7 +1,7 @@
 {
   "name": "clubhouse-client",
   "version": "0.1.1",
-  "description": "Clubhouse API client.",
+  "description": "Clubhouse API client for TypeScript, Node.js, and Deno.",
   "license": "MIT",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
   "main": "build/index.js",
