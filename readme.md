@@ -54,6 +54,8 @@ const allFollowing = await clubhouse.getAllFollowing(exampleUserId)
 const allFollowers = await clubhouse.getAllFollowers(exampleUserId)
 ```
 
+See [example.js](bin/example.js) for a full Node.js example that uses a previously authenticated user.
+
 ## Related
 
 - [clubhouse-py](https://github.com/stypr/clubhouse-py) - Clubhouse API written in Python.
