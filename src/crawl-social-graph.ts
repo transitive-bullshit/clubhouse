@@ -22,12 +22,16 @@ export async function crawlSocialGraph(
     incrementalUserIds = new Set<string>(),
     incrementalPendingUserIds = new Set<string>(),
     concurrency = 4,
-    maxUsers = Number.POSITIVE_INFINITY
+    maxUsers = Number.POSITIVE_INFINITY,
+    crawlFollowers = false,
+    crawlInvites = true
   }: {
     incrementalUserIds?: Set<string>
     incrementalPendingUserIds?: Set<string>
     concurrency?: number
     maxUsers?: number
+    crawlFollowers?: boolean
+    crawlInvites?: boolean
   } = {}
 ): Promise<SocialGraph> {
   const queue = new PQueue({ concurrency })
@@ -59,33 +63,39 @@ export async function crawlSocialGraph(
     following: User[]
     followers: User[]
   }) {
-    for (const u of following) {
-      if (processUser(u.user_id)) {
-        printUser(u)
+    if (crawlFollowers) {
+      for (const u of following) {
+        if (processUser(u.user_id)) {
+          printUser(u)
+        }
+      }
+
+      for (const u of followers) {
+        if (processUser(u.user_id)) {
+          printUser(u)
+        }
+      }
+
+      for (const u of user.mutual_follows || []) {
+        if (processUser(u.user_id)) {
+          printUser(u)
+        }
       }
     }
 
-    for (const u of followers) {
-      if (processUser(u.user_id)) {
-        printUser(u)
+    if (crawlInvites) {
+      if (processUser(user.invited_by_user_profile?.user_id)) {
+        printUser(user.invited_by_user_profile)
       }
-    }
-
-    for (const u of user.mutual_follows || []) {
-      if (processUser(u.user_id)) {
-        printUser(u)
-      }
-    }
-
-    if (processUser(user.invited_by_user_profile?.user_id)) {
-      printUser(user.invited_by_user_profile)
     }
 
     const socialUser = user as SocialGraphUserProfile
-    socialUser.following = null // TODO: temporary
-    socialUser.followers = null // TODO: temporary
-    // socialUser.following = following.map((u) => u.user_id)
-    // socialUser.followers = followers.map((u) => u.user_id)
+    socialUser.following = crawlFollowers
+      ? following.map((u) => u.user_id)
+      : null
+    socialUser.followers = crawlFollowers
+      ? followers.map((u) => u.user_id)
+      : null
     socialUser.club_ids = (user.clubs || []).map((c) => c.club_id)
     socialUser.invited_by_user_profile_id =
       user.invited_by_user_profile?.user_id
@@ -135,24 +145,26 @@ export async function crawlSocialGraph(
           )
 
           // TODO: temporary
-          const following = []
-          const followers = []
+          let following = []
+          let followers = []
 
-          // fetch all of the users following this user
-          // const following = await clubhouse.getAllFollowing(userId, {
-          //   maxUsers
-          // })
-          // clubhouse.log(
-          //   `user ${userId} (${user.username}) found ${following.length}/${user.num_following} following`
-          // )
+          if (crawlFollowers) {
+            // fetch all of the users following this user
+            following = await clubhouse.getAllFollowing(userId, {
+              maxUsers
+            })
+            clubhouse.log(
+              `user ${userId} (${user.username}) found ${following.length}/${user.num_following} following`
+            )
 
-          // // fetch all of this user's followers
-          // const followers = await clubhouse.getAllFollowers(userId, {
-          //   maxUsers
-          // })
-          // clubhouse.log(
-          //   `user ${userId} (${user.username}) found ${followers.length}/${user.num_followers} followers`
-          // )
+            // fetch all of this user's followers
+            followers = await clubhouse.getAllFollowers(userId, {
+              maxUsers
+            })
+            clubhouse.log(
+              `user ${userId} (${user.username}) found ${followers.length}/${user.num_followers} followers`
+            )
+          }
 
           const socialUser = filterAndCrawlSocialUser({
             user,
