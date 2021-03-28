@@ -16,7 +16,8 @@ async function main() {
   })
 
   const seedUserId = '4'
-  const isFullUser = (user) => user.following || user.invited_by_user_profile_id
+  const isFullUser = (user) =>
+    user.following || user.invited_by_user_profile_id || user.url
 
   // remove this if you don't have any existing users
   let existingUsers = {}

@@ -17,7 +17,9 @@ async function main() {
     if (
       !users[id] ||
       (!users[id].following && user.following) ||
-      (!users[id].invited_by_user_profile_id && user.invited_by_user_profile_id)
+      (!users[id].invited_by_user_profile_id &&
+        user.invited_by_user_profile_id) ||
+      (!users[id].url && user.url)
     ) {
       numUsersUpserted++
       users[id] = user
