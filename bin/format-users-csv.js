@@ -21,11 +21,20 @@ async function main() {
     delete user.can_receive_direct_payment
     delete user.direct_payment_fee_rate
     delete user.direct_payment_fee_fixed
+    user.bio = sanitize(user.bio)
   }
 
   console.log(JSON.stringify(users[0], null, 2))
   const output = unparse(users)
   fs.writeFileSync('users.csv', output)
+}
+
+function sanitize(str) {
+  return (str || '')
+    .replace(/[^\x00-\x7F]/g, '')
+    .replace(/['"]/g, '')
+    .replace(/[\\]/g, '-')
+    .trim()
 }
 
 main().catch((err) => {

@@ -12,7 +12,7 @@ async function main() {
     if (user.invited_by_user_profile_id) {
       invites.push({
         invited_by_user_profile_id: user.invited_by_user_profile_id,
-        user_id: user.user_id
+        user: user.user_id
       })
     }
   }
