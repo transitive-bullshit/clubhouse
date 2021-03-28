@@ -4,7 +4,7 @@ const fs = require('fs')
 const users = require('../data/users.json')
 
 async function main() {
-  const newUsers = require('../data/crawl-5-5k.json')
+  const newUsers = require('../data/crawl-march-27.json')
   const numUsersOld = Object.keys(users).length
   let numUsersUpserted = 0
 
@@ -14,7 +14,11 @@ async function main() {
     }
 
     const id = user.user_id
-    if (!users[id] || (!users[id].following && user.following)) {
+    if (
+      !users[id] ||
+      (!users[id].following && user.following) ||
+      (!users[id].invited_by_user_profile_id && user.invited_by_user_profile_id)
+    ) {
       numUsersUpserted++
       users[id] = user
       console.log(id)

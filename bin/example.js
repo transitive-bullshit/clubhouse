@@ -26,12 +26,11 @@ async function main() {
   const following = await clubhouse.getFollowing(seedUserId)
   console.log(JSON.stringify(following, null, 2))
 
-  const following = await clubhouse.getAllFollowing(seedUserId)
-  console.log(JSON.stringify(following, null, 2))
+  // const allFollowing = await clubhouse.getAllFollowing(seedUserId)
+  // console.log(JSON.stringify(allFollowing, null, 2))
 
-  const followers = await clubhouse.getAllFollowers(seedUserId)
-  console.log(followers.length)
-  console.log(JSON.stringify(followers, null, 2))
+  // const allFollowers = await clubhouse.getAllFollowers(seedUserId)
+  // console.log(JSON.stringify(allFollowers, null, 2))
 }
 
 main().catch((err) => {
