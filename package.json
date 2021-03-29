@@ -20,7 +20,6 @@
     "test": "run-s test:*",
     "test:prettier": "prettier '**/*.{js,jsx,ts,tsx}' --check",
     "prebuild": "run-s clean",
-    "prestart": "run-s clean",
     "clean": "del packages/*/build",
     "dev": "run-s start",
     "bootstrap": "lerna bootstrap",
