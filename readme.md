@@ -61,9 +61,9 @@ const allFollowing = await clubhouse.getAllFollowing(exampleUserId)
 const allFollowers = await clubhouse.getAllFollowers(exampleUserId)
 ```
 
-See [example.js](bin/example.js) for a basic Node.js example that uses a previously authenticated user.
+See [example.js](example/example.js) for a basic Node.js example that uses a previously authenticated user.
 
-See [crawler.js](bin/crawler.js) for a more advanced incremental Node.js crawler that will crawl the Clubhouse social graph.
+See [crawler.js](example/crawler.js) for a more advanced incremental Node.js crawler that will crawl the Clubhouse social graph.
 
 ## Rate Limits
 
