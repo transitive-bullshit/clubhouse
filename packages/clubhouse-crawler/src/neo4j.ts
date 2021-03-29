@@ -152,7 +152,7 @@ export const upsertSocialGraphUser = async (
       invited_by_user_profile_id: user.invited_by_user_profile_id,
       user_id: user.user_id
     })
-    console.log('invited_by_user', res.records[0]?.get(0))
+    // console.log('invited_by_user', res.records[0]?.get(0))
   }
 
   if (user.followers) {
