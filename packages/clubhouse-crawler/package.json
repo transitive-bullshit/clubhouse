@@ -19,9 +19,6 @@
   "devDependencies": {
     "clubhouse-client": "^1.0.2"
   },
-  "peerDependencies": {
-    "clubhouse-client": "^0.2.0"
-  },
   "files": [
     "build/"
   ]

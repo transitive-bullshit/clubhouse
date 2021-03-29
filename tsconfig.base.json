@@ -22,11 +22,6 @@
     "traceResolution": false,
     "listEmittedFiles": false,
     "listFiles": false,
-    "pretty": true,
-
-    "baseUrl": ".",
-    "paths": {
-      "*": ["types/*"]
-    }
+    "pretty": true
   }
 }
