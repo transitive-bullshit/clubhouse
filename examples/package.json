@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "clubhouse-client": "^1.0.2",
-    "clubhouse-crawler": "^1.0.3"
+    "clubhouse-crawler": "^1.0.3",
+    "dotenv-safe": "^8.2.0"
   }
 }
