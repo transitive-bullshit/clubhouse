@@ -1,6 +1,13 @@
 import * as neo4j from 'neo4j-driver'
 
-import { SocialGraphUserProfile } from 'clubhouse-client'
+import {
+  SocialGraphUserProfile,
+  User,
+  UserId,
+  ClubId,
+  TopicId
+} from 'clubhouse-client'
+
 import { sanitize } from './utils'
 
 export type TransactionOrSession = neo4j.Transaction | neo4j.Session
@@ -22,8 +29,9 @@ export const driver = (
 
 export const upsertUser = (
   tx: TransactionOrSession,
-  user: SocialGraphUserProfile
+  user: User | SocialGraphUserProfile
 ) => {
+  const timeScraped = new Date().toISOString()
   const isFullUser = (user: SocialGraphUserProfile): boolean =>
     !!(user.following || user.invited_by_user_profile_id || user.url)
 
@@ -37,10 +45,11 @@ export const upsertUser = (
           user.num_followers = toInteger($num_followers),
           user.num_following = toInteger($num_following),
           user.time_created = datetime($time_created),
+          user.time_scraped = datetime($time_scraped),
           user.is_blocked_by_network = $is_blocked_by_network`
 
   let onMatch = ''
-  if (isFullUser(user)) {
+  if (isFullUser(user as SocialGraphUserProfile)) {
     onMatch = `
         ON MATCH SET ${setFields}
     `
@@ -63,6 +72,7 @@ export const upsertUser = (
       num_following: -1,
       time_created: null,
       is_blocked_by_network: false,
+      time_scraped: timeScraped,
       ...user,
       bio: sanitize(user.bio)
     }
@@ -72,8 +82,8 @@ export const upsertUser = (
 export const upsertFollowsRelationship = (
   tx: TransactionOrSession,
   relationship: {
-    follower_id: number
-    user_id: number
+    follower_id: UserId
+    user_id: UserId
   }
 ) => {
   return tx.run(
@@ -90,8 +100,8 @@ export const upsertFollowsRelationship = (
 export const upsertInvitedByUserRelationship = (
   tx: TransactionOrSession,
   relationship: {
-    invited_by_user_profile_id: number
-    user_id: number
+    invited_by_user_profile_id: UserId
+    user_id: UserId
   }
 ) => {
   return tx.run(
@@ -108,8 +118,8 @@ export const upsertInvitedByUserRelationship = (
 export const upsertMemberOfClubRelationship = (
   tx: TransactionOrSession,
   relationship: {
-    user_id: number
-    club_id: number
+    user_id: UserId
+    club_id: ClubId
   }
 ) => {
   return tx.run(
@@ -126,8 +136,8 @@ export const upsertMemberOfClubRelationship = (
 export const upsertInterestedInTopicRelationship = (
   tx: TransactionOrSession,
   relationship: {
-    user_id: number
-    topic_id: number
+    user_id: UserId
+    topic_id: TopicId
   }
 ) => {
   return tx.run(
@@ -188,7 +198,7 @@ export const upsertSocialGraphUser = async (
   return res
 }
 
-export const getUserById = (tx: TransactionOrSession, userId: string) => {
+export const getUserById = (tx: TransactionOrSession, userId: UserId) => {
   return tx.run(
     `
       MATCH (u:User)
@@ -202,7 +212,7 @@ export const getUserById = (tx: TransactionOrSession, userId: string) => {
 
 export const getUserFollowersById = (
   tx: TransactionOrSession,
-  userId: string,
+  userId: UserId,
   {
     limit = 1000,
     skip = 0
@@ -225,7 +235,7 @@ export const getUserFollowersById = (
 
 export const getFollowingUsersById = (
   tx: TransactionOrSession,
-  userId: string,
+  userId: UserId,
   {
     limit = 1000,
     skip = 0
@@ -248,7 +258,7 @@ export const getFollowingUsersById = (
 
 export const getNumFollowersById = (
   tx: TransactionOrSession,
-  userId: string
+  userId: UserId
 ) => {
   return tx.run(
     `
@@ -261,7 +271,7 @@ export const getNumFollowersById = (
 
 export const getNumFollowingById = (
   tx: TransactionOrSession,
-  userId: string
+  userId: UserId
 ) => {
   return tx.run(
     `
@@ -301,7 +311,7 @@ export const getNumUserInvites = (tx: TransactionOrSession) => {
 
 export const getNumUsersInvitedById = (
   tx: TransactionOrSession,
-  userId: string
+  userId: UserId
 ) => {
   return tx.run(
     `
@@ -315,7 +325,7 @@ export const getNumUsersInvitedById = (
 // this should always be 0 or 1
 export const getNumInvitesForUserById = (
   tx: TransactionOrSession,
-  userId: string
+  userId: UserId
 ) => {
   return tx.run(
     `
@@ -328,7 +338,7 @@ export const getNumInvitesForUserById = (
 
 export const getUsersInvitedById = (
   tx: TransactionOrSession,
-  userId: string,
+  userId: UserId,
   {
     limit = 1000,
     skip = 0

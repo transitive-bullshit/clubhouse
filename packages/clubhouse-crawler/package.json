@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "neo4j-driver": "^4.2.3",
+    "p-map": "^4.0.0",
     "p-queue": "^6.6.2",
     "p-throttle": "^4.1.1"
   },

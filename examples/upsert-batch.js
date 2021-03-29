@@ -25,6 +25,7 @@ async function main() {
         await session.writeTransaction(async (tx) => {
           const res = await db.upsertSocialGraphUser(tx, user)
           console.log('user', res.records[0]?.get(0))
+          return res
         })
       }
     } catch (err) {

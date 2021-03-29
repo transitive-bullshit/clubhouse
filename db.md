@@ -43,6 +43,12 @@ MERGE (userB)-[op:INVITED_BY_USER]->(userA);
 
 MATCH (u:User) RETURN count(u) as count;
 
+MATCH (user:User)
+WHERE NOT exists(user.time_scraped)
+WITH user LIMIT 100000
+SET user.time_scraped = datetime()
+RETURN count(user);
+
 MATCH ()-[r:INVITED_BY_USER]->() RETURN count(r) as count;
 MATCH ()-[r:FOLLOWS]->() RETURN count(r) as count;
 ```
