@@ -1,15 +1,16 @@
 # Clubhouse API
 
-> Clubhouse API client for TypeScript, Node.js, and Deno.
+> Clubhouse API client and social graph crawler for TypeScript.
 
 [![NPM](https://img.shields.io/npm/v/clubhouse-client.svg)](https://www.npmjs.com/package/clubhouse-client) [![Build Status](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml/badge.svg)](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
 ## Features
 
 - 🤙 **TypeScript** - Simple, clean TS/JS wrapper for the Clubhouse API.
-- 🤖 **Crawling** - Comes with a built-in crawler for the Clubhouse social graph.
 - 🚀 **Rate Limits** - Built-in throttling for Clubhouse rate limits.
 - 💪 **Robust** - Built-in retry logic with exponential falloff via [got](https://github.com/sindresorhus/got).
+- 🤖 **Crawler** - Comes with a built-in crawler for the Clubhouse social graph.
+- 🕸 ️️**Persistent** - Crawler comes with optional [neo4j](https://neo4j.com/) support.
 
 ## Packages
 
