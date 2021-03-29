@@ -22,6 +22,7 @@ async function main() {
     user.following || user.invited_by_user_profile_id || user.url
 
   // remove this if you don't have any existing users
+  // NOTE: this version of the crawler does not use neo4j. it just uses local JSON files
   let existingUsers = {}
   try {
     existingUsers = require('../data/users.json')
