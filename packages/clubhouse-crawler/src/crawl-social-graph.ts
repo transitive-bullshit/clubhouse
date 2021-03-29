@@ -114,6 +114,9 @@ export async function crawlSocialGraph(
     socialUser.invited_by_user_profile_id =
       user.invited_by_user_profile?.user_id
 
+    // TODO: upsert clubs
+    // TODO: upsert topics
+
     delete socialUser.clubs
     delete socialUser.mutual_follows
     delete socialUser.invited_by_user_profile
@@ -151,7 +154,10 @@ export async function crawlSocialGraph(
     return false
   }
 
-  async function processUser(origUserId: UserId) {
+  async function processUser(
+    origUserId: UserId,
+    { force = false }: { force?: boolean } = {}
+  ) {
     // ensure that all user IDs we work with are strings
     const userId = `${origUserId}`
 
@@ -163,7 +169,7 @@ export async function crawlSocialGraph(
       origUserId &&
       userId &&
       numUsers < maxUsers &&
-      !(await isUserVisited(origUserId))
+      (force || !(await isUserVisited(origUserId)))
     ) {
       pendingUserIds.add(userId)
       numUsers++
@@ -236,7 +242,7 @@ export async function crawlSocialGraph(
     }
   }
 
-  await processUser(seedUserId)
+  await processUser(seedUserId, { force: true })
   for (const userId of incrementalPendingUserIds) {
     await processUser(userId)
   }
