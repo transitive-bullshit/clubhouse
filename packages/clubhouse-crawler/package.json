@@ -1,0 +1,27 @@
+{
+  "name": "clubhouse-crawler",
+  "version": "0.2.0",
+  "description": "Clubhouse social graph crawler.",
+  "license": "MIT",
+  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "neo4j-driver": "^4.2.3",
+    "p-queue": "^6.6.2",
+    "p-throttle": "^4.1.1"
+  },
+  "devDependencies": {
+    "clubhouse-client": "^0.2.0"
+  },
+  "peerDependencies": {
+    "clubhouse-client": "^0.2.0"
+  },
+  "files": [
+    "build/"
+  ]
+}

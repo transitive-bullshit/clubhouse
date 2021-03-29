@@ -1,6 +1,6 @@
 import * as neo4j from 'neo4j-driver'
 
-import { SocialGraphUserProfile } from './types'
+import { SocialGraphUserProfile } from 'clubhouse-client'
 import { sanitize } from './utils'
 
 export type TransactionOrSession = neo4j.Transaction | neo4j.Session

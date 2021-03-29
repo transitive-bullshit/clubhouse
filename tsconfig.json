@@ -1,31 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "lib": ["ESNext", "ES2019", "ESNext.Array"],
-
-    "incremental": true,
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "noEmitOnError": true,
-
-    "strict": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "isolatedModules": true,
-    "traceResolution": false,
-    "listEmittedFiles": false,
-    "listFiles": false,
-    "pretty": true,
-
-    "outDir": "build",
-    "baseUrl": "."
+    "composite": true
   },
-  "include": ["src"]
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./packages/clubhouse-client/tsconfig.json" },
+    { "path": "./packages/clubhouse-crawler/tsconfig.json" }
+  ]
 }

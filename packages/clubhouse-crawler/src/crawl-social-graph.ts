@@ -1,13 +1,13 @@
 import PQueue from 'p-queue'
 
-import { ClubhouseClient } from './clubhouse-client'
 import {
+  ClubhouseClient,
   UserId,
   SocialGraph,
   User,
   UserProfile,
   SocialGraphUserProfile
-} from './types'
+} from 'clubhouse-client'
 
 /**
  * Performs a BFS traversal over the Clubhouse social graph, starting from a
