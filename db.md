@@ -29,7 +29,6 @@ LOAD CSV WITH HEADERS FROM 'file:///users.csv' AS row
 MERGE (user:User { user_id: toInteger(row.user_id) })
   ON CREATE SET user.name = row.name, user.photo_url = row.photo_url, user.username = row.username, user.twitter = row.twitter, user.bio = row.bio, user.displayname = row.displayname, user.instagram = row.instagram, user.num_followers = toInteger(row.num_followers), user.num_following = toInteger(row.num_following), user.time_created = datetime(row.time_created), user.is_blocked_by_network = row.is_blocked_by_network;
 
-
 USING PERIODIC COMMIT 500
 LOAD CSV WITH HEADERS FROM 'file:///followers.csv' AS row
 MATCH (userA:User {user_id: toInteger(row.follower)})
