@@ -60,9 +60,7 @@ export async function crawlSocialGraph(
     console.log(JSON.stringify(user, null, 2))
 
     if (session) {
-      return session.writeTransaction(async (tx) => {
-        return db.upsertSocialGraphUser(tx, user as SocialGraphUserProfile)
-      })
+      return db.upsertSocialGraphUser(session, user as SocialGraphUserProfile)
     }
 
     return null
