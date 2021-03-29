@@ -146,7 +146,6 @@ export const upsertSocialGraphUser = async (
   user: SocialGraphUserProfile
 ) => {
   const res = await upsertUser(tx, user)
-  console.log('user', res.records[0]?.get(0))
 
   if (user.invited_by_user_profile_id) {
     const res = await upsertInvitedByUserRelationship(tx, {
@@ -185,6 +184,8 @@ export const upsertSocialGraphUser = async (
       // console.log('memberOfClub', res.records[0]?.get(0))
     }
   }
+
+  return res
 }
 
 export const getUserById = (tx: TransactionOrSession, userId: string) => {

@@ -2,7 +2,7 @@
 
 require('dotenv-safe').config()
 
-const db = require('../build/neo4j')
+const db = require('clubhouse-crawler')
 
 async function main() {
   const users = require('../out2.json')
@@ -23,46 +23,8 @@ async function main() {
         console.log(`${i + 1} / ${users.length}) upserting user`, user)
 
         await session.writeTransaction(async (tx) => {
-          const res = await db.upsertUser(tx, user)
+          const res = await db.upsertSocialGraphUser(tx, user)
           console.log('user', res.records[0]?.get(0))
-
-          if (user.invited_by_user_profile_id) {
-            const res = await db.upsertInvitedByUserRelationship(tx, {
-              invited_by_user_profile_id: user.invited_by_user_profile_id,
-              user_id: user.user_id
-            })
-            console.log('invited_by_user', res.records[0]?.get(0))
-          }
-
-          if (user.followers) {
-            for (const follower of user.followers) {
-              const res = await db.upsertFollowsRelationship(tx, {
-                follower_id: follower,
-                user_id: user.user_id
-              })
-              // console.log('follower', res.records[0]?.get(0))
-            }
-          }
-
-          if (user.following) {
-            for (const following of user.following) {
-              const res = await db.upsertFollowsRelationship(tx, {
-                follower_id: user.user_id,
-                user_id: following
-              })
-              // console.log('following', res.records[0]?.get(0))
-            }
-          }
-
-          if (user.club_ids) {
-            for (const clubId of user.club_ids) {
-              const res = await db.upsertMemberOfClubRelationship(tx, {
-                user_id: user.user_id,
-                club_id: clubId
-              })
-              // console.log('memberOfClub', res.records[0]?.get(0))
-            }
-          }
         })
       }
     } catch (err) {

@@ -1,7 +1,8 @@
 'use strict'
 
 require('dotenv-safe').config()
-const { ClubhouseClient } = require('../build')
+
+const { ClubhouseClient } = require('clubhouse-client')
 
 // basic example of how to use the ClubhouseClient for a previously authenticated user
 async function main() {

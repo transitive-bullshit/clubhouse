@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "tsc --build tsconfig.json",
-    "start": "tsc --watch --build tsconfig.json",
+    "start": "tsc --build tsconfig.json --watch",
     "pretest": "run-s build",
     "test": "run-s test:*",
     "test:prettier": "prettier '**/*.{js,jsx,ts,tsx}' --check",
