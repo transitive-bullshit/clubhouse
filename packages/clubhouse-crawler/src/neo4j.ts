@@ -148,7 +148,7 @@ export const upsertSocialGraphUser = async (
   const res = await upsertUser(tx, user)
 
   if (user.invited_by_user_profile_id) {
-    const res = await upsertInvitedByUserRelationship(tx, {
+    await upsertInvitedByUserRelationship(tx, {
       invited_by_user_profile_id: user.invited_by_user_profile_id,
       user_id: user.user_id
     })
