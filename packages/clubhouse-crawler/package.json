@@ -1,6 +1,6 @@
 {
   "name": "clubhouse-crawler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Clubhouse social graph crawler.",
   "repository": "transitive-bullshit/clubhouse",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
