@@ -1,0 +1,15 @@
+{
+  "name": "clubhouse-examples",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Clubhouse example scripts.",
+  "license": "MIT",
+  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "clubhouse-client": "^0.2.0",
+    "clubhouse-crawler": "^0.2.0"
+  }
+}

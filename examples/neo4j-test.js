@@ -3,7 +3,7 @@
 require('dotenv-safe').config()
 
 const neo4j = require('neo4j-driver')
-const db = require('../build/neo4j')
+const db = require('clubhouse-crawler')
 
 async function main() {
   const driver = db.driver()

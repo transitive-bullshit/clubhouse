@@ -1,6 +1,6 @@
 import * as neo4j from 'neo4j-driver'
 
-import { SocialGraphUserProfile } from './types'
+import { SocialGraphUserProfile } from 'clubhouse-client'
 import { sanitize } from './utils'
 
 export type TransactionOrSession = neo4j.Transaction | neo4j.Session
@@ -146,14 +146,13 @@ export const upsertSocialGraphUser = async (
   user: SocialGraphUserProfile
 ) => {
   const res = await upsertUser(tx, user)
-  console.log('user', res.records[0]?.get(0))
 
   if (user.invited_by_user_profile_id) {
-    const res = await upsertInvitedByUserRelationship(tx, {
+    await upsertInvitedByUserRelationship(tx, {
       invited_by_user_profile_id: user.invited_by_user_profile_id,
       user_id: user.user_id
     })
-    console.log('invited_by_user', res.records[0]?.get(0))
+    // console.log('invited_by_user', res.records[0]?.get(0))
   }
 
   if (user.followers) {
@@ -185,6 +184,8 @@ export const upsertSocialGraphUser = async (
       // console.log('memberOfClub', res.records[0]?.get(0))
     }
   }
+
+  return res
 }
 
 export const getUserById = (tx: TransactionOrSession, userId: string) => {

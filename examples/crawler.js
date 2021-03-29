@@ -1,7 +1,9 @@
 'use strict'
 
 require('dotenv-safe').config()
-const { ClubhouseClient, crawlSocialGraph } = require('../build')
+
+const { ClubhouseClient } = require('clubhouse-client')
+const { crawlSocialGraph } = require('clubhouse-crawler')
 
 // incremental crawler for the clubhouse social graph
 async function main() {

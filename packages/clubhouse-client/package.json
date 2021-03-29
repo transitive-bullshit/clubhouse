@@ -1,0 +1,22 @@
+{
+  "name": "clubhouse-client",
+  "version": "1.0.0",
+  "description": "Clubhouse API client for TypeScript, Node.js, and Deno.",
+  "repository": "transitive-bullshit/clubhouse",
+  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "license": "MIT",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "got": "^11.8.2",
+    "p-throttle": "^4.1.1",
+    "uuid": "^8.3.2"
+  },
+  "files": [
+    "build/"
+  ]
+}

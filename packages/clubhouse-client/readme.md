@@ -11,13 +11,6 @@
 - 🚀 **Rate Limits** - Built-in throttling for Clubhouse rate limits.
 - 💪 **Robust** - Built-in retry logic with exponential falloff via [got](https://github.com/sindresorhus/got).
 
-## Packages
-
-| Package                                           | NPM                                                                                                           | Description                               |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| [clubhouse-client](./packages/clubhouse-client)   | [![NPM](https://img.shields.io/npm/v/clubhouse-client.svg)](https://www.npmjs.com/package/clubhouse-client)   | Clubhouse API client                      |
-| [clubhouse-crawler](./packages/clubhouse-crawler) | [![NPM](https://img.shields.io/npm/v/clubhouse-crawler.svg)](https://www.npmjs.com/package/clubhouse-crawler) | Clubhouse s graph crawler + Neo4j support |
-
 ## Install
 
 ```sh
@@ -68,23 +61,7 @@ const allFollowing = await clubhouse.getAllFollowing(exampleUserId)
 const allFollowers = await clubhouse.getAllFollowers(exampleUserId)
 ```
 
-See [example.js](examples/example.js) for a basic Node.js example that uses a previously authenticated user.
-
-See [crawler.js](examples/crawler.js) for a more advanced Node.js app that will crawl the Clubhouse social graph.
-
-## Rate Limits
-
-By default, the ClubhouseClient is set to make a maximum of one API call per 3.5 seconds, which empirically gets past most Clubhouse rate limits.
-
-You'll definitely still run into some, and it's up to you how to best handle them. PLEASE DO NOT SPAM THE CLUBHOUSE API.
-
-You can customize the default `ClubhouseClient` throttling via the `throttle` parameter which uses [p-throttle](https://github.com/sindresorhus/p-throttle) under the hood.
-
-## Related
-
-- [clubhouse-py](https://github.com/stypr/clubhouse-py) - Clubhouse API written in Python.
-- [Houseclub](https://github.com/grishka/Houseclub) - A barebones unofficial Android app for Clubhouse.
-- [hipster.house](https://github.com/zhuowei/hipster.house) - An intentionally terrible third-party Clubhouse client for web browsers.
+See [example.js](../../examples/example.js) for a basic Node.js example that uses a previously authenticated user.
 
 ## Disclaimer
 
@@ -94,6 +71,6 @@ Happy Hacking 🙃
 
 ## License
 
-MIT © [Travis Fischer](https://transitivebullsh.it) and [Tim Saval](https://twitter.com/timsaval)
+MIT © [Travis Fischer](https://transitivebullsh.it).
 
 Support my OSS work by <a href="https://twitter.com/transitive_bs">following me on twitter <img src="https://storage.googleapis.com/saasify-assets/twitter-logo.svg" alt="twitter" height="24px" align="center"></a>
