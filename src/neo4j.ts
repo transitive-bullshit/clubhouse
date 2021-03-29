@@ -24,10 +24,10 @@ export const upsertUser = (
   tx: TransactionOrSession,
   user: SocialGraphUserProfile
 ) => {
-  return tx.run(
-    `
-      MERGE (user:User { user_id: toInteger($user_id) })
-        ON CREATE SET user.name = $name,
+  const isFullUser = (user: SocialGraphUserProfile): boolean =>
+    !!(user.following || user.invited_by_user_profile_id || user.url)
+
+  const setFields = `user.name = $name,
           user.photo_url = $photo_url,
           user.username = $username,
           user.twitter = $twitter,
@@ -37,9 +37,32 @@ export const upsertUser = (
           user.num_followers = toInteger($num_followers),
           user.num_following = toInteger($num_following),
           user.time_created = datetime($time_created),
-          user.is_blocked_by_network = $is_blocked_by_network;
+          user.is_blocked_by_network = $is_blocked_by_network`
+
+  let onMatch = ''
+  if (isFullUser(user)) {
+    onMatch = `
+        ON MATCH SET ${setFields}
+    `
+  }
+
+  return tx.run(
+    `
+      MERGE (user:User { user_id: toInteger($user_id) })
+        ON CREATE SET ${setFields}
+        ${onMatch}
+        RETURN user;
     `,
     {
+      name: null,
+      photo_url: null,
+      twitter: null,
+      displayname: null,
+      instagram: null,
+      num_followers: -1,
+      num_following: -1,
+      time_created: null,
+      is_blocked_by_network: false,
       ...user,
       bio: sanitize(user.bio)
     }
@@ -76,6 +99,42 @@ export const upsertInvitedByUserRelationship = (
       MATCH (userA:User {user_id: toInteger($invited_by_user_profile_id)})
       MATCH (userB:User {user_id: toInteger($user_id)})
       MERGE (userB)-[op:INVITED_BY_USER]->(userA)
+      RETURN op;
+    `,
+    relationship
+  )
+}
+
+export const upsertMemberOfClubRelationship = (
+  tx: TransactionOrSession,
+  relationship: {
+    user_id: number
+    club_id: number
+  }
+) => {
+  return tx.run(
+    `
+      MATCH (user:User {user_id: toInteger($user_id)})
+      MATCH (club:Club {club_id: toInteger($club_id)})
+      MERGE (user)-[op:MEMBER_OF]->(club)
+      RETURN op;
+    `,
+    relationship
+  )
+}
+
+export const upsertInterestedInTopicRelationship = (
+  tx: TransactionOrSession,
+  relationship: {
+    user_id: number
+    topic_id: number
+  }
+) => {
+  return tx.run(
+    `
+      MATCH (user:User {user_id: toInteger($user_id)})
+      MATCH (topic:Topic {club_id: toInteger($topic_id)})
+      MERGE (user)-[op:INTERESTED_IN]->(topic)
       RETURN op;
     `,
     relationship

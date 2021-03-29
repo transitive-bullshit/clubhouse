@@ -11,9 +11,9 @@ async function main() {
   try {
     try {
       await driver.verifyConnectivity()
-      console.log('Driver created')
-    } catch (error) {
-      console.log(`connectivity verification failed. ${error}`)
+      console.error('driver connected')
+    } catch (err) {
+      console.error('driver connection error', err)
     }
 
     const session = driver.session({ defaultAccessMode: neo4j.READ })
@@ -37,8 +37,8 @@ async function main() {
 
       console.log(res)
       console.log(res.records[0]?.get(0))
-    } catch (error) {
-      console.log(`unable to execute query. ${error}`)
+    } catch (err) {
+      console.log(`unable to execute query. ${err}`)
     } finally {
       await session.close()
     }
