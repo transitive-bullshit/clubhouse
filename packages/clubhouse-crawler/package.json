@@ -1,6 +1,6 @@
 {
   "name": "clubhouse-crawler",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Clubhouse social graph crawler.",
   "repository": "transitive-bullshit/clubhouse",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
@@ -17,7 +17,7 @@
     "p-throttle": "^4.1.1"
   },
   "devDependencies": {
-    "clubhouse-client": "^0.2.0"
+    "clubhouse-client": "^1.0.0"
   },
   "peerDependencies": {
     "clubhouse-client": "^0.2.0"
