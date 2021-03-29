@@ -1,6 +1,6 @@
-# Clubhouse API
+# Clubhouse Crawler
 
-> Clubhouse API client for TypeScript, Node.js, and Deno.
+> Clubhouse social graph crawler with Neo4j support.
 
 [![NPM](https://img.shields.io/npm/v/clubhouse-crawler.svg)](https://www.npmjs.com/package/clubhouse-crawler) [![Build Status](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml/badge.svg)](https://github.com/transitive-bullshit/clubhouse/actions/workflows/build.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
