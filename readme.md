@@ -14,10 +14,10 @@
 
 ## Packages
 
-| Package                                           | NPM                                                                                                           | Description                               |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| [clubhouse-client](./packages/clubhouse-client)   | [![NPM](https://img.shields.io/npm/v/clubhouse-client.svg)](https://www.npmjs.com/package/clubhouse-client)   | Clubhouse API client                      |
-| [clubhouse-crawler](./packages/clubhouse-crawler) | [![NPM](https://img.shields.io/npm/v/clubhouse-crawler.svg)](https://www.npmjs.com/package/clubhouse-crawler) | Clubhouse s graph crawler + Neo4j support |
+| Package                                           | NPM                                                                                                           | Description                                                          |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [clubhouse-client](./packages/clubhouse-client)   | [![NPM](https://img.shields.io/npm/v/clubhouse-client.svg)](https://www.npmjs.com/package/clubhouse-client)   | Clubhouse API client                                                 |
+| [clubhouse-crawler](./packages/clubhouse-crawler) | [![NPM](https://img.shields.io/npm/v/clubhouse-crawler.svg)](https://www.npmjs.com/package/clubhouse-crawler) | Clubhouse social graph crawler + [neo4j](https://neo4j.com/) support |
 
 ## Install
 
