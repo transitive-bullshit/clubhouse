@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.2.0",
   "description": "Clubhouse API client and social graph crawler.",
-  "license": "MIT",
+  "repository": "transitive-bullshit/clubhouse",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "license": "MIT",
   "engines": {
     "node": ">=12"
   },
