@@ -3,6 +3,7 @@
 const fs = require('fs')
 const { unparse } = require('papaparse')
 const usersData = require('../data/users.json')
+const { sanitize } = require('../build')
 
 async function main() {
   const users = Object.values(usersData)
@@ -27,14 +28,6 @@ async function main() {
   console.log(JSON.stringify(users[0], null, 2))
   const output = unparse(users)
   fs.writeFileSync('users.csv', output)
-}
-
-function sanitize(str) {
-  return (str || '')
-    .replace(/[^\x00-\x7F]/g, '')
-    .replace(/['"]/g, '')
-    .replace(/[\\]/g, '-')
-    .trim()
 }
 
 main().catch((err) => {
