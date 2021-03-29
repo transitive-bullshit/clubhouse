@@ -18,8 +18,8 @@ async function main() {
 
     const session = driver.session({ defaultAccessMode: neo4j.READ })
     try {
-      // const userId = 2481724
-      const userId = 4
+      const userId = 2481724
+      // const userId = 4
 
       // const res = await session.readTransaction((tx) => db.getNumUsers(tx))
       // const res = await db.getNumUsers(session)
@@ -36,7 +36,7 @@ async function main() {
       const res = await db.getUserById(session, userId)
 
       console.log(res)
-      console.log(res.records[0].get(0))
+      console.log(res.records[0]?.get(0))
     } catch (error) {
       console.log(`unable to execute query. ${error}`)
     } finally {
@@ -45,8 +45,6 @@ async function main() {
   } finally {
     await driver.close()
   }
-
-  // console.log(JSON.stringify(allFollowers, null, 2))
 }
 
 main().catch((err) => {
