@@ -141,6 +141,52 @@ export const upsertInterestedInTopicRelationship = (
   )
 }
 
+export const upsertSocialGraphUser = async (
+  tx: TransactionOrSession,
+  user: SocialGraphUserProfile
+) => {
+  const res = await upsertUser(tx, user)
+  console.log('user', res.records[0]?.get(0))
+
+  if (user.invited_by_user_profile_id) {
+    const res = await upsertInvitedByUserRelationship(tx, {
+      invited_by_user_profile_id: user.invited_by_user_profile_id,
+      user_id: user.user_id
+    })
+    console.log('invited_by_user', res.records[0]?.get(0))
+  }
+
+  if (user.followers) {
+    for (const follower of user.followers) {
+      await upsertFollowsRelationship(tx, {
+        follower_id: follower,
+        user_id: user.user_id
+      })
+      // console.log('follower', res.records[0]?.get(0))
+    }
+  }
+
+  if (user.following) {
+    for (const following of user.following) {
+      await upsertFollowsRelationship(tx, {
+        follower_id: user.user_id,
+        user_id: following
+      })
+      // console.log('following', res.records[0]?.get(0))
+    }
+  }
+
+  if (user.club_ids) {
+    for (const clubId of user.club_ids) {
+      await upsertMemberOfClubRelationship(tx, {
+        user_id: user.user_id,
+        club_id: clubId
+      })
+      // console.log('memberOfClub', res.records[0]?.get(0))
+    }
+  }
+}
+
 export const getUserById = (tx: TransactionOrSession, userId: string) => {
   return tx.run(
     `

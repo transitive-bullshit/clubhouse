@@ -107,10 +107,10 @@ export interface Channel {
 // ----------------------------------------------------------------------------
 
 export interface SocialGraphUserProfile extends UserProfile {
-  following?: UserId[]
-  followers?: UserId[]
-  club_ids: ClubId[]
-  invited_by_user_profile_id: UserId
+  following?: number[]
+  followers?: number[]
+  club_ids: number[]
+  invited_by_user_profile_id: number
 }
 
 export interface SocialGraph {
