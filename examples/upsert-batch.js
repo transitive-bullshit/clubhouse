@@ -19,7 +19,7 @@ async function main() {
     for (let i = 0; i < users.length; ++i) {
       const session = driver.session()
       const user = users[i]
-      console.log(`${i + 1} / ${users.length}) upserting user`, user)
+      console.error(`${i + 1} / ${users.length}) upserting user`, user)
 
       try {
         const res = await crawler.upsertSocialGraphUser(session, user)

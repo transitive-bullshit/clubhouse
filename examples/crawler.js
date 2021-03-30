@@ -51,37 +51,21 @@ async function main() {
         numInviteRelationships,
         seedUserIds
       })
-      await session.close()
     } finally {
-      if (session) {
-        await session.close()
-      }
+      await session.close()
     }
 
-    return
+    const socialGraph = await crawler.crawlSocialGraph(client, seedUserId, {
+      maxUsers: 100000,
+      crawlFollowers: false,
+      crawlInvites: true,
+      existingUserPendingIds,
+      driver
+    })
 
-    try {
-      const socialGraph = await crawler.crawlSocialGraph(client, seedUserId, {
-        maxUsers: 100000,
-        crawlFollowers: false,
-        crawlInvites: true,
-        existingUserPendingIds,
-        driver
-      })
-
-      res.json(socialGraph)
-    } catch (err) {
-      console.error('error', err)
-      if (session) {
-        await session.close()
-      }
-
-      throw err
-    }
+    res.json(socialGraph)
   } finally {
-    if (driver) {
-      await driver.close()
-    }
+    await driver.close()
   }
 }
 
