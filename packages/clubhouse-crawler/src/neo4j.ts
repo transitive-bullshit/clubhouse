@@ -3,6 +3,8 @@ import * as neo4j from 'neo4j-driver'
 import {
   SocialGraphUserProfile,
   User,
+  Club,
+  Topic,
   UserId,
   ClubId,
   TopicId
@@ -75,6 +77,70 @@ export const upsertUser = (
       time_scraped: timeScraped,
       ...user,
       bio: sanitize(user.bio)
+    }
+  )
+}
+
+export const upsertClub = (tx: TransactionOrSession, club: Club) => {
+  const timeScraped = new Date().toISOString()
+
+  const setFields = `club.name = $name,
+          club.description = $description,
+          club.photo_url = $photo_url,
+          club.num_members = toInteger($num_members),
+          club.num_followers = toInteger($num_followers),
+          club.enable_private = $enable_private,
+          club.is_follow_allowed = $is_follow_allowed,
+          club.is_membership_private = $is_membership_private,
+          club.is_community = $is_community,
+          club.url = $url,
+          club.num_online = toInteger($num_online),
+          club.time_scraped = datetime($time_scraped),
+          club.is_blocked_by_network = $is_blocked_by_network`
+
+  return tx.run(
+    `
+      MERGE (club:Club { club_id: toInteger($club_id) })
+        ON CREATE SET ${setFields}
+        ON MATCH SET ${setFields}
+        RETURN club;
+    `,
+    {
+      name: null,
+      photo_url: null,
+      num_members: null,
+      num_followers: null,
+      enable_private: null,
+      is_follow_allowed: null,
+      is_membership_private: null,
+      is_community: null,
+      url: null,
+      num_online: null,
+      time_scraped: timeScraped,
+      ...club,
+      description: sanitize(club.description)
+    }
+  )
+}
+
+export const upsertTopic = (tx: TransactionOrSession, topic: Topic) => {
+  const timeScraped = new Date().toISOString()
+
+  const setFields = `topic.title = $title, 
+          topic.abbreviated_title = $abbreviated_title`
+
+  return tx.run(
+    `
+      MERGE (topic:Topic { id: toInteger($id) })
+        ON CREATE SET ${setFields}
+        ON MATCH SET ${setFields}
+        RETURN topic;
+    `,
+    {
+      title: null,
+      abbreviated_title: null,
+      time_scraped: timeScraped,
+      ...topic
     }
   )
 }
