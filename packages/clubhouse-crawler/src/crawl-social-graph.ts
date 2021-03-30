@@ -29,7 +29,7 @@ export async function crawlSocialGraph(
     maxUsers = Number.POSITIVE_INFINITY,
     crawlFollowers = false,
     crawlInvites = true,
-    session
+    driver
   }: {
     incrementalUserIds?: Set<string>
     incrementalPendingUserIds?: Set<string>
@@ -37,7 +37,7 @@ export async function crawlSocialGraph(
     maxUsers?: number
     crawlFollowers?: boolean
     crawlInvites?: boolean
-    session?: neo4j.Session
+    driver?: neo4j.Driver
   } = {}
 ): Promise<SocialGraph> {
   const queue = new PQueue({ concurrency })
@@ -59,8 +59,14 @@ export async function crawlSocialGraph(
     // print incremental progress to stdout
     console.log(JSON.stringify(user, null, 2))
 
-    if (session) {
-      return db.upsertSocialGraphUser(session, user as SocialGraphUserProfile)
+    if (driver) {
+      const session = driver.session({ defaultAccessMode: 'WRITE' })
+
+      try {
+        await db.upsertSocialGraphUser(session, user as SocialGraphUserProfile)
+      } finally {
+        await session.close()
+      }
     }
 
     return null
@@ -134,9 +140,21 @@ export async function crawlSocialGraph(
       return true
     }
 
-    if (session) {
-      const res = await db.getUserById(session, origUserId)
-      const user = res.records[0]?.get(0) as UserNode
+    if (driver) {
+      const session = driver.session({ defaultAccessMode: 'READ' })
+      let user: UserNode
+
+      try {
+        const res = await session.readTransaction((tx) =>
+          db.getUserById(tx, origUserId)
+        )
+        user = res.records[0]?.get(0)
+      } catch (err) {
+        // TODO
+        return false
+      } finally {
+        await session.close()
+      }
 
       if (user) {
         if (user.properties.time_created) {
@@ -194,7 +212,6 @@ export async function crawlSocialGraph(
             `user ${userId} (${user.username}) found; ${numUsersCrawled} users crawled; ${pendingUserIds.size} users pending`
           )
 
-          // TODO: temporary
           let following = []
           let followers = []
 
@@ -246,6 +263,5 @@ export async function crawlSocialGraph(
   }
 
   await queue.onIdle()
-
   return users
 }

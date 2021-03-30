@@ -152,47 +152,55 @@ export const upsertInterestedInTopicRelationship = (
 }
 
 export const upsertSocialGraphUser = async (
-  tx: TransactionOrSession,
+  session: neo4j.Session,
   user: SocialGraphUserProfile
 ) => {
-  const res = await upsertUser(tx, user)
+  const res = await session.writeTransaction((tx) => upsertUser(tx, user))
 
   if (user.invited_by_user_profile_id) {
-    await upsertInvitedByUserRelationship(tx, {
-      invited_by_user_profile_id: user.invited_by_user_profile_id,
-      user_id: user.user_id
-    })
+    await session.writeTransaction((tx) =>
+      upsertInvitedByUserRelationship(tx, {
+        invited_by_user_profile_id: user.invited_by_user_profile_id,
+        user_id: user.user_id
+      })
+    )
     // console.log('invited_by_user', res.records[0]?.get(0))
   }
 
   if (user.followers) {
-    for (const follower of user.followers) {
-      await upsertFollowsRelationship(tx, {
-        follower_id: follower,
-        user_id: user.user_id
-      })
-      // console.log('follower', res.records[0]?.get(0))
-    }
+    await session.writeTransaction(async (tx) => {
+      for (const follower of user.followers) {
+        await upsertFollowsRelationship(tx, {
+          follower_id: follower,
+          user_id: user.user_id
+        })
+        // console.log('follower', res.records[0]?.get(0))
+      }
+    })
   }
 
   if (user.following) {
-    for (const following of user.following) {
-      await upsertFollowsRelationship(tx, {
-        follower_id: user.user_id,
-        user_id: following
-      })
-      // console.log('following', res.records[0]?.get(0))
-    }
+    await session.writeTransaction(async (tx) => {
+      for (const following of user.following) {
+        await upsertFollowsRelationship(tx, {
+          follower_id: user.user_id,
+          user_id: following
+        })
+        // console.log('following', res.records[0]?.get(0))
+      }
+    })
   }
 
   if (user.club_ids) {
-    for (const clubId of user.club_ids) {
-      await upsertMemberOfClubRelationship(tx, {
-        user_id: user.user_id,
-        club_id: clubId
-      })
-      // console.log('memberOfClub', res.records[0]?.get(0))
-    }
+    await session.writeTransaction(async (tx) => {
+      for (const clubId of user.club_ids) {
+        await upsertMemberOfClubRelationship(tx, {
+          user_id: user.user_id,
+          club_id: clubId
+        })
+        // console.log('memberOfClub', res.records[0]?.get(0))
+      }
+    })
   }
 
   return res

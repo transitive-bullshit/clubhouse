@@ -41,14 +41,13 @@ MATCH (userA:User {user_id: toInteger(row.invited_by_user_profile_id)})
 MATCH (userB:User {user_id: toInteger(row.user)})
 MERGE (userB)-[op:INVITED_BY_USER]->(userA);
 
-MATCH (u:User) RETURN count(u) as count;
-
 MATCH (user:User)
 WHERE NOT exists(user.time_scraped)
 WITH user LIMIT 100000
 SET user.time_scraped = datetime()
 RETURN count(user);
 
+MATCH (u:User) RETURN count(u) as count;
 MATCH ()-[r:INVITED_BY_USER]->() RETURN count(r) as count;
 MATCH ()-[r:FOLLOWS]->() RETURN count(r) as count;
 ```
