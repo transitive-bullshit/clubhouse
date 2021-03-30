@@ -284,6 +284,28 @@ export const getUserById = (tx: TransactionOrSession, userId: UserId) => {
   )
 }
 
+export const getSeedUsers = (
+  tx: TransactionOrSession,
+  {
+    limit = 1000,
+    skip = 0
+  }: {
+    limit?: number
+    skip?: number
+  } = {}
+) => {
+  return tx.run(
+    `
+      MATCH (user:User)
+      WHERE NOT exists(user.time_created)
+      RETURN user.user_id
+      ORDER BY user.user_id
+      SKIP ${skip}
+      LIMIT ${limit}
+    `
+  )
+}
+
 export const getUserFollowersById = (
   tx: TransactionOrSession,
   userId: UserId,

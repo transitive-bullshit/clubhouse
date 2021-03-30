@@ -2,11 +2,11 @@
 
 require('dotenv-safe').config()
 
-const db = require('clubhouse-crawler')
+const crawler = require('clubhouse-crawler')
 
 async function main() {
-  const users = require('../out2.json')
-  const driver = db.driver()
+  const users = require('../out-temp.json')
+  const driver = crawler.driver()
 
   try {
     try {
@@ -16,22 +16,20 @@ async function main() {
       console.error('driver connection error', err)
     }
 
-    const session = driver.session()
-    try {
-      for (let i = 0; i < users.length; ++i) {
-        const user = users[i]
-        console.log(`${i + 1} / ${users.length}) upserting user`, user)
+    for (let i = 0; i < users.length; ++i) {
+      const session = driver.session()
+      const user = users[i]
+      console.log(`${i + 1} / ${users.length}) upserting user`, user)
 
-        await session.writeTransaction(async (tx) => {
-          const res = await db.upsertSocialGraphUser(tx, user)
-          console.log('user', res.records[0]?.get(0))
-          return res
-        })
+      try {
+        const res = await crawler.upsertSocialGraphUser(session, user)
+        console.log('user', res.records[0]?.get(0))
+      } catch (err) {
+        console.error('upsert error', i, err)
+        throw err
+      } finally {
+        await session.close()
       }
-    } catch (err) {
-      console.log(`unable to execute query. ${err}`)
-    } finally {
-      await session.close()
     }
   } finally {
     await driver.close()

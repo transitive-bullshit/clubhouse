@@ -3,7 +3,7 @@
 require('dotenv-safe').config()
 
 const { ClubhouseClient } = require('clubhouse-client')
-const { crawlSocialGraph } = require('clubhouse-crawler')
+const crawler = require('clubhouse-crawler')
 
 // incremental crawler for the clubhouse social graph
 async function main() {
@@ -18,37 +18,71 @@ async function main() {
   })
 
   const seedUserId = '4'
-  const isFullUser = (user) =>
-    user.following || user.invited_by_user_profile_id || user.url
+  const driver = crawler.driver()
+  const existingUserPendingIds = new Set()
 
-  // remove this if you don't have any existing users
-  // NOTE: this version of the crawler does not use neo4j. it just uses local JSON files
-  let existingUsers = {}
   try {
-    existingUsers = require('../data/users.json')
-  } catch (err) {
-    console.warn('error loading existing users; starting fresh crawl')
+    let session
+
+    try {
+      session = driver.session({ defaultAccessMode: 'READ' })
+
+      const numUserNodes = (await crawler.getNumUsers(session)).records[0]?.get(
+        0
+      )
+      const numFollowerRelationships = (
+        await crawler.getNumFollowers(session)
+      ).records[0]?.get(0)
+
+      const numInviteRelationships = (
+        await crawler.getNumUserInvites(session)
+      ).records[0]?.get(0)
+
+      const seedUserIds = (
+        await crawler.getSeedUsers(session)
+      ).records.map((record) => record.get(0))
+      for (const userId of seedUserIds) {
+        existingUserPendingIds.add(userId)
+      }
+
+      clubhouse.log('crawling', {
+        numUserNodes,
+        numFollowerRelationships,
+        numInviteRelationships,
+        seedUserIds
+      })
+      await session.close()
+    } finally {
+      if (session) {
+        await session.close()
+      }
+    }
+
+    return
+
+    try {
+      const socialGraph = await crawler.crawlSocialGraph(client, seedUserId, {
+        maxUsers: 100000,
+        crawlFollowers: false,
+        crawlInvites: true,
+        existingUserPendingIds,
+        driver
+      })
+
+      res.json(socialGraph)
+    } catch (err) {
+      console.error('error', err)
+      if (session) {
+        await session.close()
+      }
+
+      throw err
+    }
+  } finally {
+    if (driver) {
+      await driver.close()
+    }
   }
-
-  const existingUserIds = Object.keys(existingUsers)
-  const existingUserFullIds = new Set(
-    existingUserIds.filter((userId) => !!isFullUser(existingUsers[userId]))
-  )
-  const existingUserPendingIds = new Set(
-    existingUserIds.filter((userId) => !isFullUser(existingUsers[userId]))
-  )
-
-  clubhouse.log('crawling', {
-    existingUserFullIds: existingUserFullIds.size,
-    existingUserPendingIds: existingUserPendingIds.size
-  })
-
-  const users = await crawlSocialGraph(clubhouse, seedUserId, {
-    maxUsers: 100000,
-    incrementalUserIds: existingUserFullIds,
-    incrementalPendingUserIds: existingUserPendingIds
-  })
-  console.log(JSON.stringify(users, null, 2))
 }
 
 main().catch((err) => {
