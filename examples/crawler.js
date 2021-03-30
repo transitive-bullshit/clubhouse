@@ -55,9 +55,9 @@ async function main() {
       await session.close()
     }
 
-    const socialGraph = await crawler.crawlSocialGraph(client, seedUserId, {
+    const socialGraph = await crawler.crawlSocialGraph(clubhouse, seedUserId, {
       maxUsers: 100000,
-      crawlFollowers: false,
+      crawlFollowers: true,
       crawlInvites: true,
       existingUserPendingIds,
       driver
