@@ -56,9 +56,6 @@ export async function crawlSocialGraph(
       delete user.twitter
     }
 
-    // print incremental progress to stdout
-    console.log(JSON.stringify(user, null, 2))
-
     if (driver) {
       const session = driver.session({ defaultAccessMode: 'WRITE' })
 
@@ -67,6 +64,9 @@ export async function crawlSocialGraph(
       } finally {
         await session.close()
       }
+    } else {
+      // print incremental progress to stdout
+      console.log(JSON.stringify(user, null, 2))
     }
 
     return null
@@ -241,6 +241,7 @@ export async function crawlSocialGraph(
           await upsertUser(socialUser)
 
           users[userId] = socialUser
+          console.log(JSON.stringify(socialUser, null, 2))
         } catch (err) {
           clubhouse.log('error crawling user', userId, err)
           if (users[userId] === undefined) {
