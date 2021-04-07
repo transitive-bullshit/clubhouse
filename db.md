@@ -47,6 +47,13 @@ WITH user LIMIT 100000
 SET user.time_scraped = datetime()
 RETURN count(user);
 
+
+MATCH (user:User)
+WHERE exists(user.twitter)
+RETURN count(user);
+
+
+
 MATCH (u:User) RETURN count(u) as count;
 MATCH ()-[r:INVITED_BY_USER]->() RETURN count(r) as count;
 MATCH ()-[r:FOLLOWS]->() RETURN count(r) as count;

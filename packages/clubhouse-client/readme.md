@@ -6,11 +6,11 @@
 
 ## Features
 
-- 🤙 **TypeScript** - Simple, clean TS/JS wrapper for the Clubhouse API.
-- 🚀 **Rate Limits** - Built-in throttling for Clubhouse rate limits.
-- 💪 **Robust** - Built-in retry logic with exponential falloff via [got](https://github.com/sindresorhus/got).
-- 🤖 **Crawler** - Comes with a built-in crawler for the Clubhouse social graph.
-- 🕸 ️️**Persistent** - Crawler comes with optional [neo4j](https://neo4j.com/) support.
+- **TypeScript** - Simple, clean TS/JS wrapper for the Clubhouse API.
+- **Rate Limits** - Built-in throttling for Clubhouse rate limits.
+- **Robust** - Built-in retry logic with exponential falloff via [got](https://github.com/sindresorhus/got).
+- **Crawler** - Comes with a built-in crawler for the Clubhouse social graph.
+- ️️**Persistent** - Crawler comes with optional [neo4j](https://neo4j.com/) support.
 
 ## Install
 
