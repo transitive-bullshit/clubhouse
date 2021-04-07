@@ -1,6 +1,6 @@
 {
   "name": "clubhouse-client",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "description": "Clubhouse API client for TypeScript, Node.js, and Deno.",
   "repository": "transitive-bullshit/clubhouse",
   "author": "Travis Fischer <travis@transitivebullsh.it>",

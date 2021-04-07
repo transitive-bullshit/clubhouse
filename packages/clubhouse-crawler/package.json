@@ -1,6 +1,6 @@
 {
   "name": "clubhouse-crawler",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "description": "Clubhouse social graph crawler with Neo4j support.",
   "repository": "transitive-bullshit/clubhouse",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
@@ -18,7 +18,7 @@
     "p-throttle": "^4.1.1"
   },
   "devDependencies": {
-    "clubhouse-client": "^1.0.2"
+    "clubhouse-client": "^1.2.0"
   },
   "files": [
     "build/"
