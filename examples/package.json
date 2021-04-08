@@ -1,7 +1,7 @@
 {
   "name": "clubhouse-examples",
   "private": true,
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Clubhouse example scripts.",
   "license": "MIT",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "clubhouse-client": "^1.2.0",
-    "clubhouse-crawler": "^1.2.1",
+    "clubhouse-crawler": "^1.2.2",
     "dotenv-safe": "^8.2.0"
   }
 }
