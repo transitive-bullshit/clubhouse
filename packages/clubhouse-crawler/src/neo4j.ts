@@ -81,6 +81,31 @@ export const upsertUser = (
   )
 }
 
+export const upsertUserFields = (
+  tx: TransactionOrSession,
+  userId: UserId,
+  fields: {
+    [key: string]: any
+  }
+) => {
+  const setFields = Object.entries(fields)
+    .map(([k]) => `user.${k} = $${k}`)
+    .join(', ')
+
+  return tx.run(
+    `
+      MERGE (user:User { user_id: toInteger($user_id) })
+        ON CREATE SET ${setFields}
+        ON MATCH SET ${setFields}
+        RETURN user;
+    `,
+    {
+      ...fields,
+      user_id: userId
+    }
+  )
+}
+
 export const upsertClub = (tx: TransactionOrSession, club: Club) => {
   const timeScraped = new Date().toISOString()
 
