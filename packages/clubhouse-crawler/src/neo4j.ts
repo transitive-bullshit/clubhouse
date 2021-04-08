@@ -284,6 +284,21 @@ export const getUserById = (tx: TransactionOrSession, userId: UserId) => {
   )
 }
 
+export const getUserByUsername = (
+  tx: TransactionOrSession,
+  username: string
+) => {
+  return tx.run(
+    `
+      MATCH (u:User)
+      WHERE u.username = $username
+      RETURN u
+      LIMIT 1
+    `,
+    { username }
+  )
+}
+
 export const getSeedUsers = (
   tx: TransactionOrSession,
   {
