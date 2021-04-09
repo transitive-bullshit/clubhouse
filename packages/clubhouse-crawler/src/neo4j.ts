@@ -14,12 +14,12 @@ import { sanitize } from './utils'
 
 export type TransactionOrSession = neo4j.Transaction | neo4j.Session
 
-export const driver = (
+export const driver = ({
   neo4jURI = process.env.NEO4J_URI,
   neo4jUser = process.env.NEO4J_USER,
   neo4jPassword = process.env.NEO4J_PASSWORD,
   neo4jEncryptedConnection = process.env.NEO4J_ENCRYPTED
-) => {
+}) => {
   const isEncrypted =
     !!neo4jEncryptedConnection && neo4jEncryptedConnection !== 'false'
 

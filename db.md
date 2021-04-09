@@ -18,8 +18,6 @@ User INTERESTED_IN Topic
 
 ```
 CREATE CONSTRAINT unique_user_id ON (u:User) ASSERT u.user_id IS UNIQUE;
-CREATE CONSTRAINT unique_username ON (u:User) ASSERT u.username IS UNIQUE;
-CREATE CONSTRAINT unique_twitter ON (u:User) ASSERT u.twitter IS UNIQUE;
 CREATE CONSTRAINT unique_club_id ON (c:Club) ASSERT c.club_id IS UNIQUE;
 CREATE CONSTRAINT unique_topic_id ON (t:Topic) ASSERT t.id IS UNIQUE;
 CALL db.awaitIndexes();
@@ -51,7 +49,6 @@ RETURN count(user);
 MATCH (user:User)
 WHERE exists(user.twitter)
 RETURN count(user);
-
 
 
 MATCH (u:User) RETURN count(u) as count;
