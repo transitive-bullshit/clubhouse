@@ -19,7 +19,7 @@ export const driver = ({
   neo4jUser = process.env.NEO4J_USER,
   neo4jPassword = process.env.NEO4J_PASSWORD,
   neo4jEncryptedConnection = process.env.NEO4J_ENCRYPTED
-}) => {
+} = {}) => {
   const isEncrypted =
     !!neo4jEncryptedConnection && neo4jEncryptedConnection !== 'false'
 
