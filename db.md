@@ -47,9 +47,12 @@ RETURN count(user);
 
 
 MATCH (user:User)
-WHERE exists(user.twitter)
-RETURN count(user);
+WHERE exists(user.authToken)
+RETURN user;
 
+MATCH (user:User)
+WHERE exists(user.phone_number)
+RETURN count(user);
 
 MATCH (u:User) RETURN count(u) as count;
 MATCH ()-[r:INVITED_BY_USER]->() RETURN count(r) as count;

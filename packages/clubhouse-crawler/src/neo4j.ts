@@ -472,6 +472,42 @@ export const getNumInvitesForUserById = (
   )
 }
 
+export const getUserWhoInvitedUserById = (
+  tx: TransactionOrSession,
+  userId: UserId
+) => {
+  return tx.run(
+    `
+      MATCH (u:User { user_id: toInteger($userId) })-[op:INVITED_BY_USER]->(user:User)
+      RETURN user
+    `,
+    { userId }
+  )
+}
+
+export const getUserInviteChainByUserId = async (
+  tx: TransactionOrSession,
+  userId: UserId
+) => {
+  const inviteChain = []
+  let currentUserId = userId
+
+  while (true) {
+    const user = (
+      await getUserWhoInvitedUserById(tx, currentUserId)
+    ).records[0]?.get(0)?.properties
+
+    if (!user) {
+      break
+    }
+
+    inviteChain.push(user)
+    currentUserId = user.user_id
+  }
+
+  return inviteChain
+}
+
 export const getUsersInvitedById = (
   tx: TransactionOrSession,
   userId: UserId,

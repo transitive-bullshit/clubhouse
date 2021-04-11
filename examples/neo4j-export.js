@@ -6,6 +6,7 @@ const pMap = require('p-map')
 const neo4j = require('neo4j-driver')
 const db = require('clubhouse-crawler')
 
+// data transfer between two neo4j databases
 async function main() {
   // fill these in...
   const srcDriver = db.driver({

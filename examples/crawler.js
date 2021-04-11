@@ -17,7 +17,8 @@ async function main() {
     userId
   })
 
-  const seedUserId = '4'
+  const seedUserId = '1740700' // '3509501' // '4'
+  // const seedUserId = '4'
   const driver = crawler.driver()
   const existingUserPendingIds = new Set()
 
@@ -62,8 +63,6 @@ async function main() {
       existingUserPendingIds,
       driver
     })
-
-    res.json(socialGraph)
   } finally {
     await driver.close()
   }
