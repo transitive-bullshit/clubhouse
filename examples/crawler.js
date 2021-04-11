@@ -17,8 +17,12 @@ async function main() {
     userId
   })
 
-  const seedUserId = '1740700' // '3509501' // '4'
-  // const seedUserId = '4'
+  const seedUserId = '4602198' // elon musk
+  // const seedUserId = '76' // li jin
+  // const seedUserId = '2481724' // travis
+  // const seedUserId = '1968234007' // dawson
+  // const seedUserId = '4' // clubhouse co-founder
+
   const driver = crawler.driver()
   const existingUserPendingIds = new Set()
 
@@ -42,6 +46,7 @@ async function main() {
       const seedUserIds = (
         await crawler.getSeedUsers(session)
       ).records.map((record) => record.get(0))
+
       for (const userId of seedUserIds) {
         existingUserPendingIds.add(userId)
       }
