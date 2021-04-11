@@ -21,6 +21,7 @@ async function main() {
   // const seedUserId = '76' // li jin
   // const seedUserId = '2481724' // travis
   // const seedUserId = '1968234007' // dawson
+  // const seedUserId = '275075562' // ron paul
   // const seedUserId = '4' // clubhouse co-founder
 
   const driver = crawler.driver()

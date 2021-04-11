@@ -37,18 +37,19 @@ export const upsertUser = (
   const isFullUser = (user: SocialGraphUserProfile): boolean =>
     !!(user.following || user.invited_by_user_profile_id || user.url)
 
-  const setFields = `user.name = $name,
-          user.photo_url = $photo_url,
-          user.username = $username,
-          user.twitter = $twitter,
-          user.bio = $bio,
-          user.displayname = $displayname,
-          user.instagram = $instagram,
-          user.num_followers = toInteger($num_followers),
-          user.num_following = toInteger($num_following),
-          user.time_created = datetime($time_created),
-          user.time_scraped = datetime($time_scraped),
-          user.is_blocked_by_network = $is_blocked_by_network`
+  const setFields = `
+    user.name = $name,
+    user.photo_url = $photo_url,
+    user.username = $username,
+    user.twitter = $twitter,
+    user.bio = $bio,
+    user.displayname = $displayname,
+    user.instagram = $instagram,
+    user.num_followers = toInteger($num_followers),
+    user.num_following = toInteger($num_following),
+    user.time_created = datetime($time_created),
+    user.time_scraped = datetime($time_scraped),
+    user.is_blocked_by_network = $is_blocked_by_network`
 
   let onMatch = ''
   if (isFullUser(user as SocialGraphUserProfile)) {
@@ -109,19 +110,20 @@ export const upsertUserFields = (
 export const upsertClub = (tx: TransactionOrSession, club: Club) => {
   const timeScraped = new Date().toISOString()
 
-  const setFields = `club.name = $name,
-          club.description = $description,
-          club.photo_url = $photo_url,
-          club.num_members = toInteger($num_members),
-          club.num_followers = toInteger($num_followers),
-          club.enable_private = $enable_private,
-          club.is_follow_allowed = $is_follow_allowed,
-          club.is_membership_private = $is_membership_private,
-          club.is_community = $is_community,
-          club.url = $url,
-          club.num_online = toInteger($num_online),
-          club.time_scraped = datetime($time_scraped),
-          club.is_blocked_by_network = $is_blocked_by_network`
+  const setFields = `
+    club.name = $name,
+    club.description = $description,
+    club.photo_url = $photo_url,
+    club.num_members = toInteger($num_members),
+    club.num_followers = toInteger($num_followers),
+    club.enable_private = $enable_private,
+    club.is_follow_allowed = $is_follow_allowed,
+    club.is_membership_private = $is_membership_private,
+    club.is_community = $is_community,
+    club.url = $url,
+    club.num_online = toInteger($num_online),
+    club.time_scraped = datetime($time_scraped),
+    club.is_blocked_by_network = $is_blocked_by_network`
 
   return tx.run(
     `
@@ -151,8 +153,9 @@ export const upsertClub = (tx: TransactionOrSession, club: Club) => {
 export const upsertTopic = (tx: TransactionOrSession, topic: Topic) => {
   const timeScraped = new Date().toISOString()
 
-  const setFields = `topic.title = $title, 
-          topic.abbreviated_title = $abbreviated_title`
+  const setFields = `
+    topic.title = $title, 
+    topic.abbreviated_title = $abbreviated_title`
 
   return tx.run(
     `

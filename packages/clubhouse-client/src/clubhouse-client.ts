@@ -189,6 +189,27 @@ export class ClubhouseClient {
     })
   }
 
+  async followUser(userId: UserId): Promise<ClubhouseAPIResponse> {
+    return this._fetch({
+      endpoint: `/follow`,
+      method: 'POST',
+      body: {
+        user_id: +userId,
+        source: 4
+      }
+    })
+  }
+
+  async unfollowUser(userId: UserId): Promise<ClubhouseAPIResponse> {
+    return this._fetch({
+      endpoint: `/unfollow`,
+      method: 'POST',
+      body: {
+        user_id: +userId
+      }
+    })
+  }
+
   async checkWaitlistStatus(): Promise<WaitlistStatusAPIResponse> {
     return this._fetch({
       endpoint: `/check_waitlist_status`
