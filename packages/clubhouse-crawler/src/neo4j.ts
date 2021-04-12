@@ -368,6 +368,32 @@ export const getSeedUsers = (
   )
 }
 
+export const getUsers = (
+  tx: TransactionOrSession,
+  {
+    limit = 1000,
+    skip = 0,
+    orderBy = 'num_followers',
+    descending = true
+  }: {
+    limit?: number
+    skip?: number
+    orderBy?: string
+    descending?: boolean
+  } = {}
+) => {
+  return tx.run(
+    `
+      MATCH (user:User)
+      WHERE exists(user.${orderBy})
+      RETURN user
+      ORDER BY user.${orderBy} ${descending ? 'DESC' : ''}
+      SKIP ${skip}
+      LIMIT ${limit}
+    `
+  )
+}
+
 export const getUserFollowersById = (
   tx: TransactionOrSession,
   userId: UserId,
