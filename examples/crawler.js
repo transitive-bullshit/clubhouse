@@ -17,8 +17,9 @@ async function main() {
     userId
   })
 
-  const seedUserId = '4602198' // elon musk
-  // const seedUserId = '76' // li jin
+  // const seedUserId = '4602198' // elon musk
+  const seedUserId = '76' // li jin
+  // const seedUserId = '104' // andrew chen
   // const seedUserId = '2481724' // travis
   // const seedUserId = '1968234007' // dawson
   // const seedUserId = '275075562' // ron paul

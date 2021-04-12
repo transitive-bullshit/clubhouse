@@ -327,14 +327,33 @@ export const getUserByUsername = (
   )
 }
 
+export const getUserByTwitterHandle = (
+  tx: TransactionOrSession,
+  twitter: string
+) => {
+  return tx.run(
+    `
+      MATCH (u:User)
+      WHERE u.twitter = $twitter
+      RETURN u
+      LIMIT 1
+    `,
+    { twitter }
+  )
+}
+
 export const getSeedUsers = (
   tx: TransactionOrSession,
   {
     limit = 1000,
-    skip = 0
+    skip = 0,
+    orderBy = 'user_id',
+    descending = false
   }: {
     limit?: number
     skip?: number
+    orderBy?: string
+    descending?: boolean
   } = {}
 ) => {
   return tx.run(
@@ -342,7 +361,7 @@ export const getSeedUsers = (
       MATCH (user:User)
       WHERE NOT exists(user.time_created)
       RETURN user.user_id
-      ORDER BY user.user_id
+      ORDER BY user.${orderBy} ${descending ? 'DESC' : ''}
       SKIP ${skip}
       LIMIT ${limit}
     `
