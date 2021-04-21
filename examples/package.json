@@ -1,7 +1,7 @@
 {
   "name": "clubhouse-examples",
   "private": true,
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Clubhouse example scripts.",
   "license": "MIT",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
