@@ -1,1 +1,1 @@
-export const FOLLOWS: string = 'FOLLOWS';
+export const FOLLOWS: string = 'FOLLOWS'
