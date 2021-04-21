@@ -1,1 +1,0 @@
-export const USER_FOLLOWERS = 'user_followers';

@@ -584,6 +584,11 @@ export const getUsersInvitedById = (
   )
 }
 
+/**
+ * Creates a projection graph for the (User)-[:FOLLOWING]-(User)
+ * 
+ * to be used for certain algorithms like pageRank
+ */
 export const createUserFollowersGraph = (tx: TransactionOrSession) => {
   return tx.run(
     `
@@ -599,7 +604,7 @@ export const createUserFollowersGraph = (tx: TransactionOrSession) => {
 /**
  * Runs a page rank algorithm on the projection USER_FOLLOWERS and WRITES the result to the user node
  */
-export const runPageRank = (tx: TransactionOrSession, {
+export const runPageRankWrite = (tx: TransactionOrSession, {
   maxIterations = 20,
   dampingFactor = 0.85,
   writeProperty = 'pagerank',
@@ -617,15 +622,60 @@ export const runPageRank = (tx: TransactionOrSession, {
       CALL gds.pageRank.write('${USER_FOLLOWERS}', {
         maxIterations: ${maxIterations},
         dampingFactor: ${dampingFactor},
-        writeProperty: '${writeProperty}',
         ${relationshipWeightProperty ? `relationshipWeightProperty: ${relationshipWeightProperty},` : ''}
         ${tolerance !== undefined ? `tolerance: ${tolerance},` : ''}
+        writeProperty: '${writeProperty}'
       })
       YIELD nodePropertiesWritten, ranIterations
     `, {
       maxIterations,
       dampingFactor,
       writeProperty,
+      relationshipWeightProperty,
+      tolerance,
+    },
+  )
+}
+
+/**
+ * Runs a personalized page rank algorithm on the projection USER_FOLLOWERS and streams the result
+ */
+export const runPersonalizedPageRank = (tx: TransactionOrSession, user_id: string, {
+  maxIterations = 20,
+  dampingFactor = 0.85,
+  relationshipWeightProperty,
+  tolerance,
+}: {
+  maxIterations: number,
+  dampingFactor: number,
+  relationshipWeightProperty?: string,
+  tolerance?: number,
+}, {
+  limit = 1000,
+  skip = 0
+}: {
+  limit?: number
+  skip?: number
+}) => {
+  return tx.run(
+    `
+      MATCH (user:${USER} {user_id: $user_id)
+      CALL gds.pageRank.stream('${USER_FOLLOWERS}', {
+        maxIterations: $maxIterations,
+        dampingFactor: $dampingFactor,
+        ${relationshipWeightProperty ? 'relationshipWeightProperty: $relationshipWeightProperty,' : ''}
+        ${tolerance !== undefined ? 'tolerance: $tolerance,' : ''}
+        sourceNodes: [user]
+      })
+      YIELD nodeId, score
+      RETURN gds.util.asNode(nodeId).name AS name, score
+      ORDER BY score DESC, name ASC
+      SKIP ${skip}
+      LIMIT ${limit}
+    `, {
+      user_id,
+      maxIterations,
+      dampingFactor,
       relationshipWeightProperty,
       tolerance,
     },

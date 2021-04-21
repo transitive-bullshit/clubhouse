@@ -15,5 +15,8 @@ export interface UserNode extends neo4j.Node {
     time_created: neo4j.DateTime
     time_scraped: neo4j.DateTime
     is_blocked_by_network: string
+    // CHS
+    /** Global PageRank score - written async by runPageRankWrite */
+    pagerank: number,
   }
 }
