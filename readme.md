@@ -69,6 +69,8 @@ const allFollowing = await clubhouse.getAllFollowing(exampleUserId)
 const allFollowers = await clubhouse.getAllFollowers(exampleUserId)
 ```
 
+See [login.js](examples/login.js) for a basic Node.js example that logs you in using the Clubhouse API and gives you the environment variables that you'll need (put them in `.env`) to run the other examples.
+
 See [example.js](examples/example.js) for a basic Node.js example that uses a previously authenticated user.
 
 See [crawler.js](examples/crawler.js) for a more advanced Node.js app that will crawl the Clubhouse social graph.
