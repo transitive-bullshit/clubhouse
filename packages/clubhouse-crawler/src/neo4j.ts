@@ -10,7 +10,12 @@ import {
   TopicId
 } from 'clubhouse-client'
 
+
 import { sanitize } from './utils'
+
+import { USER } from './graphdb/labels.js';
+import { FOLLOWS } from './graphdb/relationships.js';
+import { USER_FOLLOWERS } from './graphdb/projections.js';
 
 export type TransactionOrSession = neo4j.Transaction | neo4j.Session
 
@@ -576,5 +581,53 @@ export const getUsersInvitedById = (
       LIMIT ${limit}
     `,
     { userId }
+  )
+}
+
+export const createUserFollowersGraph = (tx: TransactionOrSession) => {
+  return tx.run(
+    `
+      CALL gds.graph.create(
+        '${USER_FOLLOWERS}',
+        '${USER}',
+        '${FOLLOWS}'
+      )
+    `,
+  )
+}
+
+/**
+ * Runs a page rank algorithm on the projection USER_FOLLOWERS and WRITES the result to the user node
+ */
+export const runPageRank = (tx: TransactionOrSession, {
+  maxIterations = 20,
+  dampingFactor = 0.85,
+  writeProperty = 'pagerank',
+  relationshipWeightProperty,
+  tolerance,
+}: {
+  maxIterations: number,
+  dampingFactor: number,
+  writeProperty: string,
+  relationshipWeightProperty?: string,
+  tolerance?: number,
+}) => {
+  return tx.run(
+    `
+      CALL gds.pageRank.write('${USER_FOLLOWERS}', {
+        maxIterations: ${maxIterations},
+        dampingFactor: ${dampingFactor},
+        writeProperty: '${writeProperty}',
+        ${relationshipWeightProperty ? `relationshipWeightProperty: ${relationshipWeightProperty},` : ''}
+        ${tolerance !== undefined ? `tolerance: ${tolerance},` : ''}
+      })
+      YIELD nodePropertiesWritten, ranIterations
+    `, {
+      maxIterations,
+      dampingFactor,
+      writeProperty,
+      relationshipWeightProperty,
+      tolerance,
+    },
   )
 }
