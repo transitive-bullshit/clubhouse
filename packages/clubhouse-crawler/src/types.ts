@@ -17,6 +17,6 @@ export interface UserNode extends neo4j.Node {
     is_blocked_by_network: string
     // CHS
     /** Global PageRank score - written async by runPageRankWrite */
-    pagerank: number,
+    pagerank: number
   }
 }
