@@ -10,12 +10,11 @@ import {
   TopicId
 } from 'clubhouse-client'
 
-
 import { sanitize } from './utils'
 
-import { USER } from './graphdb/labels.js';
-import { FOLLOWS } from './graphdb/relationships.js';
-import { USER_FOLLOWERS } from './graphdb/projections.js';
+import { USER } from './graphdb/labels.js'
+import { FOLLOWS } from './graphdb/relationships.js'
+import { USER_FOLLOWERS } from './graphdb/projections.js'
 
 export type TransactionOrSession = neo4j.Transaction | neo4j.Session
 
@@ -586,7 +585,7 @@ export const getUsersInvitedById = (
 
 /**
  * Creates a projection graph for the (User)-[:FOLLOWING]-(User)
- * 
+ *
  * to be used for certain algorithms like pageRank
  */
 export const createUserFollowersGraph = (tx: TransactionOrSession) => {
@@ -597,73 +596,90 @@ export const createUserFollowersGraph = (tx: TransactionOrSession) => {
         '${USER}',
         '${FOLLOWS}'
       )
-    `,
+    `
   )
 }
 
 /**
  * Runs a page rank algorithm on the projection USER_FOLLOWERS and WRITES the result to the user node
  */
-export const runPageRankWrite = (tx: TransactionOrSession, {
-  maxIterations = 100,
-  dampingFactor = 0.85,
-  writeProperty = 'pagerank',
-  relationshipWeightProperty,
-  tolerance
-}: {
-  maxIterations: number,
-  dampingFactor: number,
-  writeProperty: string,
-  relationshipWeightProperty?: string,
-  tolerance?: number
-}) => {
+export const runPageRankWrite = (
+  tx: TransactionOrSession,
+  {
+    maxIterations = 100,
+    dampingFactor = 0.85,
+    writeProperty = 'pagerank',
+    relationshipWeightProperty,
+    tolerance
+  }: {
+    maxIterations: number
+    dampingFactor: number
+    writeProperty: string
+    relationshipWeightProperty?: string
+    tolerance?: number
+  }
+) => {
   return tx.run(
     `
       CALL gds.pageRank.write('${USER_FOLLOWERS}', {
         maxIterations: ${maxIterations},
         dampingFactor: ${dampingFactor},
-        ${relationshipWeightProperty ? `relationshipWeightProperty: ${relationshipWeightProperty},` : ''}
+        ${
+          relationshipWeightProperty
+            ? `relationshipWeightProperty: ${relationshipWeightProperty},`
+            : ''
+        }
         ${tolerance !== undefined ? `tolerance: ${tolerance},` : ''}
         writeProperty: '${writeProperty}'
       })
       YIELD nodePropertiesWritten, ranIterations
-    `, {
+    `,
+    {
       maxIterations,
       dampingFactor,
       writeProperty,
       relationshipWeightProperty,
       tolerance
-    },
+    }
   )
 }
 
 /**
  * Runs a personalized page rank algorithm on the projection USER_FOLLOWERS and streams the result
  */
-export const runPersonalizedPageRank = (tx: TransactionOrSession, user_id: string, {
-  maxIterations = 100,
-  dampingFactor = 0.85,
-  relationshipWeightProperty,
-  tolerance
-}: {
-  maxIterations: number,
-  dampingFactor: number,
-  relationshipWeightProperty?: string,
-  tolerance?: number
-}, {
-  limit = 1000,
-  skip = 0
-}: {
-  limit?: number
-  skip?: number
-}) => {
+export const runPersonalizedPageRank = (
+  tx: TransactionOrSession,
+  user_id: string,
+  {
+    maxIterations = 100,
+    dampingFactor = 0.85,
+    relationshipWeightProperty,
+    tolerance
+  }: {
+    maxIterations: number
+    dampingFactor: number
+    relationshipWeightProperty?: string
+    tolerance?: number
+  },
+  {
+    limit = 1000,
+    skip = 0
+  }: {
+    limit?: number
+    skip?: number
+  }
+) => {
   return tx.run(
     `
       MATCH (user:${USER} {user_id: $user_id)
       CALL gds.pageRank.stream('${USER_FOLLOWERS}', {
         maxIterations: $maxIterations,
         dampingFactor: $dampingFactor,
-        ${relationshipWeightProperty ? 'relationshipWeightProperty: $relationshipWeightProperty,' : ''}
+        ${
+          relationshipWeightProperty
+            ? 'relationshipWeightProperty: $relationshipWeightProperty,'
+            : ''
+        }
         ${tolerance !== undefined ? 'tolerance: $tolerance,' : ''}
         sourceNodes: [user]
       })
@@ -672,12 +688,13 @@ export const runPersonalizedPageRank = (tx: TransactionOrSession, user_id: strin
       ORDER BY score DESC, name ASC
       SKIP ${skip}
       LIMIT ${limit}
-    `, {
+    `,
+    {
       user_id,
       maxIterations,
       dampingFactor,
       relationshipWeightProperty,
       tolerance
-    },
+    }
   )
 }
