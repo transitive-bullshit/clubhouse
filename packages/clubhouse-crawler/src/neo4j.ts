@@ -605,7 +605,7 @@ export const createUserFollowersGraph = (tx: TransactionOrSession) => {
  * Runs a page rank algorithm on the projection USER_FOLLOWERS and WRITES the result to the user node
  */
 export const runPageRankWrite = (tx: TransactionOrSession, {
-  maxIterations = 20,
+  maxIterations = 100,
   dampingFactor = 0.85,
   writeProperty = 'pagerank',
   relationshipWeightProperty,
@@ -641,7 +641,7 @@ export const runPageRankWrite = (tx: TransactionOrSession, {
  * Runs a personalized page rank algorithm on the projection USER_FOLLOWERS and streams the result
  */
 export const runPersonalizedPageRank = (tx: TransactionOrSession, user_id: string, {
-  maxIterations = 20,
+  maxIterations = 100,
   dampingFactor = 0.85,
   relationshipWeightProperty,
   tolerance,
