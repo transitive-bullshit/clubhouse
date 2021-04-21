@@ -609,13 +609,13 @@ export const runPageRankWrite = (tx: TransactionOrSession, {
   dampingFactor = 0.85,
   writeProperty = 'pagerank',
   relationshipWeightProperty,
-  tolerance,
+  tolerance
 }: {
   maxIterations: number,
   dampingFactor: number,
   writeProperty: string,
   relationshipWeightProperty?: string,
-  tolerance?: number,
+  tolerance?: number
 }) => {
   return tx.run(
     `
@@ -632,7 +632,7 @@ export const runPageRankWrite = (tx: TransactionOrSession, {
       dampingFactor,
       writeProperty,
       relationshipWeightProperty,
-      tolerance,
+      tolerance
     },
   )
 }
@@ -644,12 +644,12 @@ export const runPersonalizedPageRank = (tx: TransactionOrSession, user_id: strin
   maxIterations = 100,
   dampingFactor = 0.85,
   relationshipWeightProperty,
-  tolerance,
+  tolerance
 }: {
   maxIterations: number,
   dampingFactor: number,
   relationshipWeightProperty?: string,
-  tolerance?: number,
+  tolerance?: number
 }, {
   limit = 1000,
   skip = 0
@@ -677,7 +677,7 @@ export const runPersonalizedPageRank = (tx: TransactionOrSession, user_id: strin
       maxIterations,
       dampingFactor,
       relationshipWeightProperty,
-      tolerance,
+      tolerance
     },
   )
 }
