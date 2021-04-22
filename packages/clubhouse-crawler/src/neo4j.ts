@@ -612,13 +612,13 @@ export const runPageRankWrite = (
     relationshipWeightProperty,
     tolerance
   }: {
-    maxIterations: number
-    dampingFactor: number
-    writeProperty: string
+    maxIterations?: number
+    dampingFactor?: number
+    writeProperty?: string
     relationshipWeightProperty?: string
     tolerance?: number
   }
-) => {
+): Promise<Object> => {
   return tx.run(
     `
       CALL gds.pageRank.write('${USER_FOLLOWERS}', {

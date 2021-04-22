@@ -263,6 +263,23 @@ export async function crawlSocialGraph(
     await processUser(userId)
   }
 
+  /** Run PageRank */
+  if (driver) {
+    const session = driver.session({ defaultAccessMode: 'WRITE' })
+    try {
+      await session.writeTransaction(async (tx) => {
+        await db.createUserFollowersGraph(tx);
+        await db.runPageRankWrite(tx, {});
+      });
+    } catch (err) {
+      console.error('crawlSocialGraph: Error running PageRank', err);
+    } finally {
+      await session.close()
+    }
+  } else {
+    console.warn('crawlSocialGraph: Did not run PageRank');
+  }
+
   await queue.onIdle()
   return users
 }
