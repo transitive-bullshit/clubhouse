@@ -26,3 +26,4 @@ yarn-error.log*
 
 data/
 out.json
+examples/follow.js

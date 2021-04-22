@@ -48,7 +48,7 @@ RETURN count(user);
 
 MATCH (user:User)
 WHERE exists(user.authToken)
-RETURN user;
+RETURN user.authToken,user.user_id,user.deviceId;
 
 MATCH (user:User)
 WHERE exists(user.phone_number)
