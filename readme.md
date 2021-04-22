@@ -97,6 +97,6 @@ Happy Hacking 🙃
 
 ## License
 
-MIT © [Travis Fischer](https://transitivebullsh.it) and [Tim Saval](https://twitter.com/timsaval)
+MIT © [Travis Fischer](https://transitivebullsh.it), [Tim Saval](https://twitter.com/timsaval) and [Ahmed Tokyo](https://github.com/A-Tokyo)
 
 Support my OSS work by <a href="https://twitter.com/transitive_bs">following me on twitter <img src="https://storage.googleapis.com/saasify-assets/twitter-logo.svg" alt="twitter" height="24px" align="center"></a>
