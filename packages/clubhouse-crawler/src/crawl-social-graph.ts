@@ -275,7 +275,7 @@ export async function crawlSocialGraph(
           if (errCreatingInMemoryGraph.message.includes('already exists')) {
             // No worries, in memory graph already exists
           } else {
-            throw errCreatingInMemoryGraph;
+            throw errCreatingInMemoryGraph
           }
         }
         /** Run PageRank */
