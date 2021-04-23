@@ -268,6 +268,7 @@ export async function crawlSocialGraph(
     const session = driver.session({ defaultAccessMode: 'WRITE' })
     try {
       await session.writeTransaction(async (tx) => {
+        /** Create inMemory graph if it doesn't exist */
         try {
           await db.createUserFollowersGraph(tx)
         } catch (errCreatingInMemoryGraph) {
@@ -277,6 +278,7 @@ export async function crawlSocialGraph(
             throw errCreatingInMemoryGraph;
           }
         }
+        /** Run PageRank */
         await db.runPageRankWrite(tx, {})
       })
     } catch (err) {
