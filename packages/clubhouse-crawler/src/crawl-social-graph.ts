@@ -263,7 +263,7 @@ export async function crawlSocialGraph(
     await processUser(userId)
   }
 
-  /** Run PageRank */
+  /** Run Algorithms */
   if (driver) {
     const session = driver.session({ defaultAccessMode: 'WRITE' })
     try {
