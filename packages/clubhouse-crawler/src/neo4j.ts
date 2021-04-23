@@ -606,15 +606,15 @@ export const createUserFollowersGraph = (tx: TransactionOrSession) => {
 export const runPageRankWrite = (
   tx: TransactionOrSession,
   {
-    maxIterations = 100,
-    dampingFactor = 0.85,
     writeProperty = 'pagerank',
+    maxIterations = 100,
+    dampingFactor,
     relationshipWeightProperty,
     tolerance
   }: {
-    maxIterations: number
-    dampingFactor: number
     writeProperty: string
+    maxIterations: number
+    dampingFactor?: number
     relationshipWeightProperty?: string
     tolerance?: number
   }
@@ -652,12 +652,12 @@ export const runPersonalizedPageRank = (
   user_id: string,
   {
     maxIterations = 100,
-    dampingFactor = 0.85,
+    dampingFactor,
     relationshipWeightProperty,
     tolerance
   }: {
     maxIterations: number
-    dampingFactor: number
+    dampingFactor?: number
     relationshipWeightProperty?: string
     tolerance?: number
   },
@@ -706,7 +706,7 @@ export const runCommunityDetectionLabelPropagationWrite = (
   tx: TransactionOrSession,
   {
     writeProperty = 'community',
-    maxIterations,
+    maxIterations = 100,
     dampingFactor,
     relationshipWeightProperty,
     tolerance
