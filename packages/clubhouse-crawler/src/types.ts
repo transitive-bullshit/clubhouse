@@ -18,5 +18,7 @@ export interface UserNode extends neo4j.Node {
     // CHS
     /** Global PageRank score - written async by runPageRankWrite */
     pagerank?: number
+    /** Community ID */
+    community?: number
   }
 }

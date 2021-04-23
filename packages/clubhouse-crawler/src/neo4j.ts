@@ -622,22 +622,22 @@ export const runPageRankWrite = (
   return tx.run(
     `
       CALL gds.pageRank.write('${USER_FOLLOWERS}', {
-        maxIterations: ${maxIterations},
-        dampingFactor: ${dampingFactor},
+        maxIterations: $maxIterations,
+        dampingFactor: $dampingFactor,
         ${
           relationshipWeightProperty
             ? `relationshipWeightProperty: ${relationshipWeightProperty},`
             : ''
         }
         ${tolerance !== undefined ? `tolerance: ${tolerance},` : ''}
-        writeProperty: '${writeProperty}'
+        writeProperty: $writeProperty
       })
       YIELD nodePropertiesWritten, ranIterations
     `,
     {
+      writeProperty,
       maxIterations,
       dampingFactor,
-      writeProperty,
       relationshipWeightProperty,
       tolerance
     }
@@ -700,43 +700,43 @@ export const runPersonalizedPageRank = (
 }
 
 /**
- * Runs a community detection algorithm on the projection USER_FOLLOWERS and WRITES the result to the user node
+ * Runs a community detection algorithm (Label Propagation) on the projection USER_FOLLOWERS and WRITES the result to the user node
  */
-export const runCommunityDetectionWrite = (
+export const runCommunityDetectionLabelPropagationWrite = (
   tx: TransactionOrSession,
   {
-    maxIterations = 100,
-    dampingFactor = 0.85,
-    writeProperty = 'pagerank',
+    writeProperty = 'community',
+    maxIterations,
+    dampingFactor,
     relationshipWeightProperty,
     tolerance
   }: {
-    maxIterations: number
-    dampingFactor: number
     writeProperty: string
+    maxIterations?: number
+    dampingFactor?: number
     relationshipWeightProperty?: string
     tolerance?: number
   }
 ) => {
   return tx.run(
     `
-      CALL gds.pageRank.write('${USER_FOLLOWERS}', {
-        maxIterations: ${maxIterations},
-        dampingFactor: ${dampingFactor},
+      CALL gds.labelPropagation.write('${USER_FOLLOWERS}', {
+        ${maxIterations !== undefined ? `maxIterations: $maxIterations,` : ''}
+        ${dampingFactor !== undefined ? `dampingFactor: $dampingFactor,` : ''}
         ${
           relationshipWeightProperty
-            ? `relationshipWeightProperty: ${relationshipWeightProperty},`
+            ? `relationshipWeightProperty: $relationshipWeightProperty,`
             : ''
         }
-        ${tolerance !== undefined ? `tolerance: ${tolerance},` : ''}
-        writeProperty: '${writeProperty}'
+        ${tolerance !== undefined ? 'tolerance: $tolerance,' : ''}
+        writeProperty: $writeProperty
       })
-      YIELD nodePropertiesWritten, ranIterations
+      YIELD communityCount, ranIterations, didConverge
     `,
     {
+      writeProperty,
       maxIterations,
       dampingFactor,
-      writeProperty,
       relationshipWeightProperty,
       tolerance
     }
