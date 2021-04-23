@@ -622,14 +622,14 @@ export const runPageRankWrite = (
   return tx.run(
     `
       CALL gds.pageRank.write('${USER_FOLLOWERS}', {
-        maxIterations: $maxIterations,
-        dampingFactor: $dampingFactor,
+        ${maxIterations !== undefined ? `maxIterations: $maxIterations,` : ''}
+        ${dampingFactor !== undefined ? `dampingFactor: $dampingFactor,` : ''}
         ${
           relationshipWeightProperty
-            ? `relationshipWeightProperty: ${relationshipWeightProperty},`
+            ? `relationshipWeightProperty: $relationshipWeightProperty,`
             : ''
         }
-        ${tolerance !== undefined ? `tolerance: ${tolerance},` : ''}
+        ${tolerance !== undefined ? 'tolerance: $tolerance,' : ''}
         writeProperty: $writeProperty
       })
       YIELD nodePropertiesWritten, ranIterations
@@ -673,11 +673,11 @@ export const runPersonalizedPageRank = (
     `
       MATCH (user:${USER} {user_id: $user_id)
       CALL gds.pageRank.stream('${USER_FOLLOWERS}', {
-        maxIterations: $maxIterations,
-        dampingFactor: $dampingFactor,
+        ${maxIterations !== undefined ? `maxIterations: $maxIterations,` : ''}
+        ${dampingFactor !== undefined ? `dampingFactor: $dampingFactor,` : ''}
         ${
           relationshipWeightProperty
-            ? 'relationshipWeightProperty: $relationshipWeightProperty,'
+            ? `relationshipWeightProperty: $relationshipWeightProperty,`
             : ''
         }
         ${tolerance !== undefined ? 'tolerance: $tolerance,' : ''}
