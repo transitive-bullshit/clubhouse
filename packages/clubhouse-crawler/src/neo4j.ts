@@ -702,7 +702,7 @@ export const runPersonalizedPageRank = (
 /**
  * Runs a community detection algorithm on the projection USER_FOLLOWERS and WRITES the result to the user node
  */
- export const runCommunityDetectionWrite = (
+export const runCommunityDetectionWrite = (
   tx: TransactionOrSession,
   {
     maxIterations = 100,
