@@ -268,7 +268,15 @@ export async function crawlSocialGraph(
     const session = driver.session({ defaultAccessMode: 'WRITE' })
     try {
       await session.writeTransaction(async (tx) => {
-        await db.createUserFollowersGraph(tx)
+        try {
+          await db.createUserFollowersGraph(tx)
+        } catch (errCreatingInMemoryGraph) {
+          if (errCreatingInMemoryGraph.message.includes('already exists')) {
+            // No worries, in memory graph already exists
+          } else {
+            throw errCreatingInMemoryGraph;
+          }
+        }
         await db.runPageRankWrite(tx, {})
       })
     } catch (err) {
