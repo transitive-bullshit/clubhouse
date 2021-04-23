@@ -287,7 +287,7 @@ export async function crawlSocialGraph(
       await session.close()
     }
   } else {
-    console.warn('crawlSocialGraph: Did not run PageRank')
+    console.warn('crawlSocialGraph: Did not run Graph Algorithms')
   }
 
   await queue.onIdle()
