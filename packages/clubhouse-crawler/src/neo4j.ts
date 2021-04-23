@@ -698,3 +698,47 @@ export const runPersonalizedPageRank = (
     }
   )
 }
+
+/**
+ * Runs a community detection algorithm on the projection USER_FOLLOWERS and WRITES the result to the user node
+ */
+ export const runCommunityDetectionWrite = (
+  tx: TransactionOrSession,
+  {
+    maxIterations = 100,
+    dampingFactor = 0.85,
+    writeProperty = 'pagerank',
+    relationshipWeightProperty,
+    tolerance
+  }: {
+    maxIterations: number
+    dampingFactor: number
+    writeProperty: string
+    relationshipWeightProperty?: string
+    tolerance?: number
+  }
+) => {
+  return tx.run(
+    `
+      CALL gds.pageRank.write('${USER_FOLLOWERS}', {
+        maxIterations: ${maxIterations},
+        dampingFactor: ${dampingFactor},
+        ${
+          relationshipWeightProperty
+            ? `relationshipWeightProperty: ${relationshipWeightProperty},`
+            : ''
+        }
+        ${tolerance !== undefined ? `tolerance: ${tolerance},` : ''}
+        writeProperty: '${writeProperty}'
+      })
+      YIELD nodePropertiesWritten, ranIterations
+    `,
+    {
+      maxIterations,
+      dampingFactor,
+      writeProperty,
+      relationshipWeightProperty,
+      tolerance
+    }
+  )
+}
