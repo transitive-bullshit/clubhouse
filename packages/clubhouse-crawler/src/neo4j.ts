@@ -612,8 +612,8 @@ export const runPageRankWrite = (
     relationshipWeightProperty,
     tolerance
   }: {
-    writeProperty: string
-    maxIterations: number
+    writeProperty?: string
+    maxIterations?: number
     dampingFactor?: number
     relationshipWeightProperty?: string
     tolerance?: number
@@ -714,7 +714,7 @@ export const runCommunityDetectionLabelPropagationWrite = (
     relationshipWeightProperty,
     tolerance
   }: {
-    writeProperty: string
+    writeProperty?: string
     maxIterations?: number
     dampingFactor?: number
     relationshipWeightProperty?: string
