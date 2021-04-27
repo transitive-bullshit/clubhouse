@@ -280,6 +280,8 @@ export async function crawlSocialGraph(
         }
         /** Run PageRank */
         await db.runPageRankWrite(tx, {})
+        /** Run Community Detection - Label propagation */
+        await db.runCommunityDetectionLabelPropagationWrite(tx, {})
       })
     } catch (err) {
       console.error('crawlSocialGraph: Error running PageRank', err)

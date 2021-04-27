@@ -667,6 +667,9 @@ export const runPersonalizedPageRank = (
   }: {
     limit?: number
     skip?: number
+  } = {
+    limit: 1000,
+    skip: 0
   }
 ) => {
   return tx.run(
