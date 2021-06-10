@@ -240,3 +240,15 @@ export interface JoinChannelAPIResponse extends ClubhouseAPIResponse {
   pubnub_enable: boolean
   agora_native_mute: boolean
 }
+
+export interface UpdateUsernameAPIResponse extends ClubhouseAPIResponse {
+  username: string
+}
+
+export interface UpdateNameAPIResponse extends ClubhouseAPIResponse {
+  name: string
+}
+
+export interface UpdateBioAPIResponse extends ClubhouseAPIResponse {
+  bio: string
+}

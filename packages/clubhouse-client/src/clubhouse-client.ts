@@ -17,7 +17,10 @@ import {
   ClubhouseAPIResponse,
   GetTopicAPIResponse,
   GetChannelsAPIResponse,
-  JoinChannelAPIResponse
+  JoinChannelAPIResponse,
+  UpdateUsernameAPIResponse,
+  UpdateNameAPIResponse,
+  UpdateBioAPIResponse
 } from './types'
 
 const MAX_PAGE_SIZE = 400
@@ -271,6 +274,17 @@ export class ClubhouseClient {
     })
   }
 
+  async leaveChannel(channel): Promise<JoinChannelAPIResponse> {
+    return this._fetch({
+      endpoint: `/leave_channel`,
+      method: 'POST',
+      body: {
+        channel,
+        channel_id: null
+      }
+    })
+  }
+
   async searchUsers(query: string): Promise<PagedUserAPIResponse> {
     return this._fetch({
       endpoint: `/search_users`,
@@ -293,6 +307,36 @@ export class ClubhouseClient {
         cofollows_only: false,
         followers_only: false,
         following_only: false
+      }
+    })
+  }
+
+  async updateUsername(username: string): Promise<UpdateUsernameAPIResponse> {
+    return this._fetch({
+      endpoint: `/update_username`,
+      method: 'POST',
+      body: {
+        username
+      }
+    })
+  }
+
+  async updateName(name: string): Promise<UpdateNameAPIResponse> {
+    return this._fetch({
+      endpoint: `/update_name`,
+      method: 'POST',
+      body: {
+        name
+      }
+    })
+  }
+
+  async updateBio(bio: string): Promise<UpdateBioAPIResponse> {
+    return this._fetch({
+      endpoint: `/update_name`,
+      method: 'POST',
+      body: {
+        bio
       }
     })
   }
