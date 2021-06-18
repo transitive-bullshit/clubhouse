@@ -263,6 +263,35 @@ export async function crawlSocialGraph(
     await processUser(userId)
   }
 
+  /** Run Algorithms */
+  if (driver) {
+    const session = driver.session({ defaultAccessMode: 'WRITE' })
+    try {
+      await session.writeTransaction(async (tx) => {
+        /** Create inMemory graph if it doesn't exist */
+        try {
+          await db.createUserFollowersGraph(tx)
+        } catch (errCreatingInMemoryGraph) {
+          if (errCreatingInMemoryGraph.message.includes('already exists')) {
+            // No worries, in memory graph already exists
+          } else {
+            throw errCreatingInMemoryGraph
+          }
+        }
+        /** Run PageRank */
+        await db.runPageRankWrite(tx, {})
+        /** Run Community Detection - Label propagation */
+        await db.runCommunityDetectionLabelPropagationWrite(tx, {})
+      })
+    } catch (err) {
+      console.error('crawlSocialGraph: Error running PageRank', err)
+    } finally {
+      await session.close()
+    }
+  } else {
+    console.warn('crawlSocialGraph: Did not run Graph Algorithms')
+  }
+
   await queue.onIdle()
   return users
 }
